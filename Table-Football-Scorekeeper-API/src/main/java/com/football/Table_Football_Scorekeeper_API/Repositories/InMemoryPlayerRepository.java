@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.PlayerNotFoundException;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
@@ -61,17 +62,17 @@ public class InMemoryPlayerRepository implements PlayerRepository {
             if (player.getPlayerId().equals(id)) {
                 player.setName(name);
                 return Optional.of(player);
-            } else {
-                return null; // TODO: Exception about player not found.
             }
         }
-        return null; // TODO: What to write here?
+        throw new PlayerNotFoundException("Player with ID " + id + " not found.");
     }
 
     @Override
     public boolean deletePlayer(Long id) {
         return players.removeIf(player -> player.getPlayerId().equals(id));
     }
+
+    // Custom methods
 
     @Override
     public List<Player> getPlayersByName(String name) {
