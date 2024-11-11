@@ -1,21 +1,22 @@
 package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface PlayerRepository extends JpaRepository<Player, Long> {
+public interface PlayerRepository {
 
-    /*
-    Inherited methods:
+    Player addPlayer(Player player);
 
-    save(Player player)
-	findById(Long id)
-	findAll()
-	deleteById(Long id)
-	delete(Player player)
-    */
+    Optional<Player> getPlayer(Long id);
+
+    List<Player> getAllPlayers(Sort sort);
+
+    Optional<Player> updatePlayer(Long id, String name);
+
+    boolean deletePlayer(Long id);
 
     // Custom query methods
 

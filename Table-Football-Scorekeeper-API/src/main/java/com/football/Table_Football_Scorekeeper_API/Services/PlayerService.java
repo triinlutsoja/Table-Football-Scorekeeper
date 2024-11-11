@@ -8,13 +8,13 @@ public interface PlayerService {
 
     Player addPlayer(Player player);
 
-    Optional<Player> getPlayer(int id);
+    Optional<Player> getPlayer(Long id);
 
     List<Player> getAllPlayers();
 
-    Optional<Player> updatePlayer(int id, String name);
+    Optional<Player> updatePlayer(Long id, String name);
 
-    boolean deletePlayer(int id);
+    boolean deletePlayer(Long id);
 
     // Custom methods
 

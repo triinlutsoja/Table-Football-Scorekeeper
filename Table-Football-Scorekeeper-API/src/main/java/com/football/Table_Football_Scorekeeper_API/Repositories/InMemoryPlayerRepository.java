@@ -14,7 +14,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     private final List<Player> players = new ArrayList<Player>();
     private Long currentId = 0L;  // to simulate auto-increment ID
 
-    // Helper methord for sorting
+    // Helper method for sorting
     private List<Player> applySorting(Sort sort) {
         List<Player> sortedPlayers = new ArrayList<>(players);
         sort.forEach(order -> {
@@ -32,23 +32,23 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     }
 
     @Override
-    public <S extends Player> S save(S entity) {
-        if (entity.getPlayerId() == null) {
-            entity.setPlayerId(currentId++);
+    public Player addPlayer(Player player) {
+        if (player.getPlayerId() == null) {
+            player.setPlayerId(currentId++);
         }
-        players.add(entity);
-        return entity;
+        players.add(player);
+        return player;
     }
 
     @Override
-    public Optional<Player> findById(Long aLong) {
+    public Optional<Player> getPlayer(Long id) {
         return players.stream()
-                .filter(player -> player.getPlayerId().equals(aLong))
+                .filter(player -> player.getPlayerId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public List<Player> findAll(Sort sort) {  // sort by a player object's field
+    public List<Player> getAllPlayers(Sort sort) {  // sort by a player object's field
         if (sort != null) {
             return applySorting(sort);
         }
@@ -56,8 +56,21 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     }
 
     @Override
-    public void deleteById(Long aLong) {
-        players.removeIf(player -> player.getPlayerId().equals(aLong));
+    public Optional<Player> updatePlayer(Long id, String name) {
+        for (Player player : players) {
+            if (player.getPlayerId().equals(id)) {
+                player.setName(name);
+                return Optional.of(player);
+            } else {
+                return null; // TODO: Exception about player not found.
+            }
+        }
+        return null; // TODO: What to write here?
+    }
+
+    @Override
+    public boolean deletePlayer(Long id) {
+        return players.removeIf(player -> player.getPlayerId().equals(id));
     }
 
     @Override
