@@ -6,16 +6,14 @@ import com.football.Table_Football_Scorekeeper_API.Services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
-
-    // TODO: add private Service
 
     private final PlayerService playerService;
 
@@ -25,24 +23,44 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    private ResponseEntity<Player> addPlayer() {
-        return null;
+    @PostMapping
+    public ResponseEntity<Player> addPlayer(@RequestBody Player player) {
+        Player newPlayer = playerService.addPlayer(player);
+        return ResponseEntity.status(201).body(newPlayer);
     }
 
-    private ResponseEntity<Player> getPlayer() {
-        return null;
+    @GetMapping("/{id}")
+    public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
+        Player existingplayer = playerService.getPlayer(id).get();
+        return ResponseEntity.status(200).body(existingplayer);
     }
 
-    private ResponseEntity<Player> getAllPlayers(Sort sort) {
-        // TODO: Request the Sort object from the user.
-        return null;
+    @GetMapping  // Spring Boot automatically supports Sort parameters in the URL with the format ?sort=property,asc or ?sort=property,desc.
+    public ResponseEntity<List<Player>> getAllPlayers(@RequestParam Sort sort) {
+        List<Player> allPlayers = playerService.getAllPlayers(sort);
+        if (allPlayers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(allPlayers);
     }
 
-    private ResponseEntity<Player> updatePlayer() {
-        return null;
+    @PutMapping("/{id}")
+    public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestParam String name) {
+        Optional<Player> existingPlayer = playerService.getPlayer(id);
+        if (existingPlayer.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Player updatedPlayer = playerService.updatePlayer(id, name).get();
+        return ResponseEntity.ok(updatedPlayer);
     }
 
-    private ResponseEntity<Player> deletePlayer() {
-        return null;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
+        Optional<Player> existingPlayer = playerService.getPlayer(id);
+        if (existingPlayer.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        playerService.deletePlayer(id);
+        return ResponseEntity.ok().build();
     }
 }
