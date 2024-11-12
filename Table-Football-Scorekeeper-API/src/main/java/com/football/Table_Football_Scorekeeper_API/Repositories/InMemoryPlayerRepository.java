@@ -3,6 +3,7 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.PlayerNotFoundException;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Repository
 public class InMemoryPlayerRepository implements PlayerRepository {
 
     private final List<Player> players = new ArrayList<Player>();

@@ -1,5 +1,6 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +11,7 @@ public interface PlayerService {
 
     Optional<Player> getPlayer(Long id);
 
-    List<Player> getAllPlayers();
+    List<Player> getAllPlayers(Sort sort);
 
     Optional<Player> updatePlayer(Long id, String name);
 
