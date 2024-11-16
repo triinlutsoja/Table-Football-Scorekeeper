@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class InMemoryPlayerServiceImpl implements PlayerService {
+public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
 
     // Constructor to inject the repository
     @Autowired
-    public InMemoryPlayerServiceImpl(PlayerRepository playerRepository) {
+    public PlayerServiceImpl(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 

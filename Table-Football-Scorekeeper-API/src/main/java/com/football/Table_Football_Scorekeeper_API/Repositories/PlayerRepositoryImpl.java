@@ -1,7 +1,6 @@
 package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
