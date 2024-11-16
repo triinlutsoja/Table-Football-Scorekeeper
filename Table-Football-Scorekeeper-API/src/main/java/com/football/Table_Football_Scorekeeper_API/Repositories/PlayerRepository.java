@@ -8,13 +8,13 @@ import java.util.Optional;
 
 public interface PlayerRepository {
 
-    Player addPlayer(Player player);
+    Optional<Player> addPlayer(Player player);
 
     Optional<Player> getPlayer(Long id);
 
-    List<Player> getAllPlayers(Sort sort);
+    List<Player> getAllPlayers();
 
-    Optional<Player> updatePlayer(Long id, String name);
+    Optional<Player> updatePlayer(Long id, Player player);
 
     boolean deletePlayer(Long id);
 

@@ -1,10 +1,8 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import com.football.Table_Football_Scorekeeper_API.Exceptions.DuplicatePlayerException;
-import com.football.Table_Football_Scorekeeper_API.Exceptions.PlayerNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepository;
-import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,38 +14,46 @@ public class InMemoryPlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository;
 
     // Constructor to inject the repository
+    @Autowired
     public InMemoryPlayerServiceImpl(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
     @Override
-    public Player addPlayer(Player player) {
+    public Optional<Player> addPlayer(Player player) {
         List<Player> existingPlayers = playerRepository.getPlayersByName(player.getName());
-
+        
         if (existingPlayers.isEmpty()) {
             return playerRepository.addPlayer(player);
-        } else {
-            throw new DuplicatePlayerException("Player with name " + player.getName() + " already exists.");
         }
+        return Optional.empty();
     }
 
     @Override
     public Optional<Player> getPlayer(Long id) {
-        return Optional.ofNullable(playerRepository.getPlayer(id)
-                .orElseThrow(() -> new PlayerNotFoundException("Player with id " + id + " not found.")));
+        Optional<Player> existingPlayer = playerRepository.getPlayer(id);
+
+        if (existingPlayer.isEmpty()) {
+            return Optional.empty();
+        }
+        return existingPlayer;
     }
 
     @Override
-    public List<Player> getAllPlayers(Sort sort) {
-        return playerRepository.getAllPlayers(sort);
+    public List<Player> getAllPlayers() {
+        List<Player> players = playerRepository.getAllPlayers();
+        if (players.isEmpty()) {
+            return List.of();
+        }
+        return players;
     }
 
     @Override
-    public Optional<Player> updatePlayer(Long id, String name) {
+    public Optional<Player> updatePlayer(Long id, Player player) {
         Optional<Player> existingPlayer = playerRepository.getPlayer(id);
 
         if (existingPlayer.isPresent()) {
-            return playerRepository.updatePlayer(id, name);
+            return playerRepository.updatePlayer(id, player);
         } else {
             return Optional.empty();
         }
@@ -60,7 +66,7 @@ public class InMemoryPlayerServiceImpl implements PlayerService {
         if (existingPlayer.isPresent()) {
             return playerRepository.deletePlayer(id);
         } else {
-            throw new PlayerNotFoundException("Player with id " + id + " not found.");
+            return false;
         }
     }
 
@@ -68,7 +74,7 @@ public class InMemoryPlayerServiceImpl implements PlayerService {
     public List<Player> getPlayersByName(String name) {
         List<Player> players = playerRepository.getPlayersByName(name);
         if (players.isEmpty()) {
-            throw new PlayerNotFoundException("No players found with the name: " + name);
+            return List.of();
         }
         return players;
     }

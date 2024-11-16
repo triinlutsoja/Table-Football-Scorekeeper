@@ -10,7 +10,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
 
     @Override
-    public Player addPlayer(Player player) {
+    public Optional<Player> addPlayer(Player player) {
         return null;  // TODO:
     }
 
@@ -20,12 +20,12 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public List<Player> getAllPlayers(Sort sort) {
+    public List<Player> getAllPlayers() {
         return List.of();  // TODO:
     }
 
     @Override
-    public Optional<Player> updatePlayer(Long id, String name) {
+    public Optional<Player> updatePlayer(Long id, Player player) {
         return Optional.empty();  // TODO:
     }
 

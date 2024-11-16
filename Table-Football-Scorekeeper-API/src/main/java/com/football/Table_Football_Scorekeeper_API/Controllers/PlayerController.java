@@ -1,10 +1,8 @@
 package com.football.Table_Football_Scorekeeper_API.Controllers;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepository;
 import com.football.Table_Football_Scorekeeper_API.Services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +23,25 @@ public class PlayerController {
 
     @PostMapping
     public ResponseEntity<Player> addPlayer(@RequestBody Player player) {
-        Player newPlayer = playerService.addPlayer(player);
-        return ResponseEntity.status(201).body(newPlayer);
+        Optional<Player> newPlayer = playerService.addPlayer(player);
+        if (newPlayer.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(201).body(newPlayer.get());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
-        Player existingplayer = playerService.getPlayer(id).get();
-        return ResponseEntity.status(200).body(existingplayer);
+        Optional<Player> existingPlayer = playerService.getPlayer(id);
+        if (existingPlayer.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.status(200).body(existingPlayer.get());
     }
 
-    @GetMapping  // Spring Boot automatically supports Sort parameters in the URL with the format ?sort=property,asc or ?sort=property,desc.
-    public ResponseEntity<List<Player>> getAllPlayers(@RequestParam Sort sort) {
-        List<Player> allPlayers = playerService.getAllPlayers(sort);
+    @GetMapping
+    public ResponseEntity<List<Player>> getAllPlayers() {
+        List<Player> allPlayers = playerService.getAllPlayers();
         if (allPlayers.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -45,12 +49,12 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestParam String name) {
+    public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player) {
         Optional<Player> existingPlayer = playerService.getPlayer(id);
         if (existingPlayer.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        Player updatedPlayer = playerService.updatePlayer(id, name).get();
+        Player updatedPlayer = playerService.updatePlayer(id, player).get();
         return ResponseEntity.ok(updatedPlayer);
     }
 
@@ -62,5 +66,14 @@ public class PlayerController {
         }
         playerService.deletePlayer(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/by-name")
+    public ResponseEntity<List<Player>> getPlayersByName(@RequestParam String name) {
+        List<Player> players = playerService.getPlayersByName(name);
+        if (players.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(players);
     }
 }
