@@ -21,12 +21,20 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> addPlayer(Player player) {
-        List<Player> existingPlayers = playerRepository.getPlayersByName(player.getName());
-        
-        if (existingPlayers.isEmpty()) {
-            return playerRepository.addPlayer(player);
+        // Validate that the player's name is not null
+        if (player.getName() == null) {
+            return Optional.empty();  // Return empty if name is null
         }
-        return Optional.empty();
+
+        // Check for duplicates
+        List<Player> existingPlayers = playerRepository.getPlayersByName(player.getName());
+        if (!existingPlayers.isEmpty() ) {
+            // Return Optional.empty() if a duplicate exists
+            return Optional.empty();
+        }
+
+        // Add the player if all conditions are met
+        return playerRepository.addPlayer(player);
     }
 
     @Override
@@ -50,13 +58,19 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
+        if (player.getName() == null) {
+            return Optional.empty();  // Avoid null names
+        }
+
+        // Check for duplicate names (ignore the player being updated)
+        List<Player> existingPlayers = playerRepository.getPlayersByName(player.getName());
+        if (!existingPlayers.isEmpty() && !existingPlayers.get(0).getPlayerId().equals(id)) {
+            return Optional.empty();  // return empty if name already exists
+        }
         Optional<Player> existingPlayer = playerRepository.getPlayer(id);
 
-        if (existingPlayer.isPresent()) {
-            return playerRepository.updatePlayer(id, player);
-        } else {
-            return Optional.empty();
-        }
+        // Proceed with the update if no conflicts
+        return playerRepository.updatePlayer(id, player);
     }
 
     @Override

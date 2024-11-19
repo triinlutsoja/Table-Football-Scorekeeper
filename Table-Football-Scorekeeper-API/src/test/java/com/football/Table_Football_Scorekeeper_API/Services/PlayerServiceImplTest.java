@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.DuplicatePlayerException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.InMemoryPlayerRepository;
 import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepositoryImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +29,11 @@ class PlayerServiceImplTest {
         playerRepository.addPlayer(new Player("Jane Smith"));
     }
 
+    @AfterEach
+    void tearDown() {
+        playerRepository.clearPlayers();  // Ensures the repository is reset after each test
+    }
+
     @Test
     void addPlayer_ShouldAddNewPlayer() {  // Verifies that a new player is correctly added to the repository and service.
         // Arrange
@@ -40,6 +46,31 @@ class PlayerServiceImplTest {
         assertEquals(newPlayer.getPlayerId(), addedPlayer.get().getPlayerId());
         assertEquals(newPlayer.getName(), addedPlayer.get().getName());
         assertEquals(3, playerRepository.getAllPlayers().size());
+    }
+
+    @Test
+    void addPlayer_ShouldReturnEmptyOptional_WhenNameIsNull() {
+        // Arrange
+        Player newPlayer = new Player(null);
+
+        // Act
+        Optional<Player> addedPlayer = playerService.addPlayer(newPlayer);
+
+        // Assert
+        assertTrue(addedPlayer.isEmpty(), "Adding a player with a null value for name should return an empty " +
+                "Optional");
+    }
+
+    @Test
+    void addPlayer_ShouldThrowException_WhenNameAlreadyExists() {
+        // Arrange
+        Player duplicatePlayer = new Player("John Doe");  // "John Doe" already exists in the setup
+
+        // Act & Assert
+        Optional<Player> addedPlayer = playerService.addPlayer(duplicatePlayer);
+
+        // Validate the exception message
+        assertTrue(addedPlayer.isEmpty(), "Adding a duplicate player should return an empty Optional");
     }
 
     @Test
@@ -101,6 +132,20 @@ class PlayerServiceImplTest {
 
         // Assert
         assertTrue(nonExistingPlayerToBeUpdated.isEmpty());
+    }
+
+    void updatePlayer_ShouldReturnEmptyOptional_WhenNameAlreadyExists() {  // Tests that an empty Optional is returned
+        // when trying to update an existing player with a duplicate name.
+
+        // Arrange
+        Player updatedPlayer = new Player("Jame Smith");  // a "Jane Smith" already exists in setUp()
+        Long playerId = 1L;  // a player with this ID exists
+
+        // Act
+        Optional<Player> result = playerService.updatePlayer(playerId, updatedPlayer);
+
+        // Assert
+        assertTrue(result.isEmpty(), "Updating a player to a name that already exists should return an empty Optional");
     }
 
     @Test

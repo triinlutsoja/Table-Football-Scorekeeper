@@ -59,4 +59,8 @@ public class InMemoryPlayerRepository implements PlayerRepository {
                 .filter(player -> player.getName().equalsIgnoreCase(name))
                 .collect(Collectors.toList());
     }
+
+    public void clearPlayers() {  // method for the tearDown() test in PlayerServiceImplTest
+        players.clear();
+    }
 }
