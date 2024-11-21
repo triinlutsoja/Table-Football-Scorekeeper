@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +16,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     private static final String CREATE_PLAYER_TABLE = """
         CREATE TABLE IF NOT EXISTS player (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(50) NOT NULL
+        name VARCHAR(50) NOT NULL;
         );
     """;
 
@@ -38,7 +40,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Optional<Player> addPlayer(Player player) {
-        String insertPlayerSQL = "INSERT INTO player (name) VALUES (?)";
+        String insertPlayerSQL = "INSERT INTO player (name) VALUES (?);";
 
         try (var conn = getConnection();
              var statement = conn.prepareStatement(insertPlayerSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
@@ -61,17 +63,88 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Optional<Player> getPlayer(Long id) {
-        return Optional.empty();
+        String selectPlayerSQL = "SELECT * FROM player WHERE id = ?";
+
+        try (var conn = getConnection();
+             var statement = conn.prepareStatement(selectPlayerSQL)) {
+
+            statement.setLong(1, id); // Set the ID parameter in the query
+            var resultSet = statement.executeQuery(); // Execute the query
+
+            if (resultSet.next()) { // Check if a result is returned
+                // Create a Player object from the result set
+                Player player = new Player();
+                player.setPlayerId(resultSet.getLong("id")); // Map the "id" column to playerId
+                player.setName(resultSet.getString("name")); // Map the "name" column to name
+                return Optional.of(player); // Return the Player wrapped in an Optional
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving player: " + e.getMessage());
+        }
+        return Optional.empty(); // Return empty Optional if no player is found or an error occurs
     }
 
     @Override
     public List<Player> getAllPlayers() {
-        return List.of();
+        String selectPlayerSQL = "SELECT * FROM player;";
+        List<Player> allPlayers = new ArrayList<>();
+
+        try (var conn = getConnection();
+             var statement = conn.prepareStatement(selectPlayerSQL)) {
+
+            var resultSet = statement.executeQuery(); // Execute the query
+
+            while (resultSet.next()) { // Loop through all rows in the result set
+                // Create a Player object from the current row
+                Player player = new Player();
+                player.setPlayerId(resultSet.getLong("id")); // Map the "id" column to playerId
+                player.setName(resultSet.getString("name")); // Map the "name" column to name
+                allPlayers.add(player); // Add the player to the list
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving all players: " + e.getMessage());
+        }
+        return allPlayers;
     }
 
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
-        return Optional.empty();
+        String updatePlayerSQL = "UPDATE player SET name = ? WHERE id = ?";
+        String selectUpdatedPlayerSQL = "SELECT * FROM player WHERE id = ?";
+
+        Player existingPlayer;
+
+        try (var conn = getConnection();
+             var updateStatement = conn.prepareStatement(updatePlayerSQL);
+             var selectStatement = conn.prepareStatement(selectUpdatedPlayerSQL)) {
+
+            // Set parameters for the UPDATE statement
+            updateStatement.setString(1, player.getName());
+            updateStatement.setLong(2, id);
+
+            // Execute the UPDATE statement
+            int rowsAffected = updateStatement.executeUpdate();
+
+            // If no rows were updated, return an empty Optional
+            if (rowsAffected == 0) {
+                return Optional.empty();
+            }
+
+            // Fetch the updated player from the database
+            selectStatement.setLong(1, id);
+            var resultSet = selectStatement.executeQuery();
+
+            if (resultSet.next()) {
+                Player updatedPlayer = new Player();
+                updatedPlayer.setPlayerId(resultSet.getLong("id"));
+                updatedPlayer.setName(resultSet.getString("name"));
+                return Optional.of(updatedPlayer);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error updating player: " + e.getMessage());
+        }
+        return Optional.empty(); // Return empty if update fails
     }
 
     @Override
