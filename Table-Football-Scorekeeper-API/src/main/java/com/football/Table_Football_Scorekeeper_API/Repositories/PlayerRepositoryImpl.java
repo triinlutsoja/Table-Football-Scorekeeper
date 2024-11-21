@@ -11,34 +11,52 @@ import java.util.Optional;
 @Repository
 public class PlayerRepositoryImpl implements PlayerRepository {
 
-    // TODO: create table – where and when?
+    private static final String CREATE_PLAYER_TABLE = """
+        CREATE TABLE IF NOT EXISTS player (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50) NOT NULL
+        );
+    """;
+
+    public PlayerRepositoryImpl() {
+        String url = "jdbc:postgresql://localhost:5432/table_football_db";
+        try (var conn = DriverManager.getConnection(url)) {
+            try (var statement = conn.createStatement()) {
+                statement.execute(CREATE_PLAYER_TABLE); // Create table only if it doesn't already exist
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during table creation: " + e.getMessage());
+        }
+    }
+
+    private java.sql.Connection getConnection() throws SQLException {
+        String url = "jdbc:postgresql://localhost:5432/table_football_db";  // connection to the PostgreSQL database
+        String username = "football_admin";
+        String password = "EvoconChamp";
+        return DriverManager.getConnection(url, username, password);
+    }
 
     @Override
     public Optional<Player> addPlayer(Player player) {
-        String url = "jdbc:postgresql://localhost:5432/table_football_db";  // connection to the PostgreSQL database
-        try (var conn = DriverManager.getConnection(url)) {  // opening a connection with the database
-            if (conn != null) {  // checks if connection has been opened successfully
-                var statement = conn.prepareStatement("INSERT INTO player (name) VALUES (?)",  // prepares SQL statement
-                        java.sql.Statement.RETURN_GENERATED_KEYS); // returns the auto-generated key created during the
-                // execution of this INSERT statement.
-                statement.setString(1, player.getName()); // sets player's name in the prepared statement
-                int rowsAffected = statement.executeUpdate();  // running the prepared statement
+        String insertPlayerSQL = "INSERT INTO player (name) VALUES (?)";
 
-                if (rowsAffected > 0) {  // if greater than 1, then adding player was successful
-                    var generatedKeys = statement.getGeneratedKeys();  // retrieves the generated IDs
-                    if (generatedKeys.next()) {
-                        player.setPlayerId(generatedKeys.getLong(1));  // Set the generated ID to the player object
-                        return Optional.of(player);
-                    }
+        try (var conn = getConnection();
+             var statement = conn.prepareStatement(insertPlayerSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
+
+            statement.setString(1, player.getName());
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                var generatedKeys = statement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    player.setPlayerId(generatedKeys.getLong(1));
+                    return Optional.of(player);
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error inserting player: " + e.getMessage());
+            System.err.println("Error adding player: " + e.getMessage());
         }
-
-        // When the try block is exited, Java automatically calls the close() method on conn (the database connection).
-
-        return Optional.empty();  // return empty if insertion fails
+        return Optional.empty();
     }
 
     @Override
