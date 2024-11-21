@@ -54,7 +54,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     // Custom methods
 
     @Override
-    public List<Player> getPlayersByName(String name) {
+    public List<Player> findByNameIgnoreCase(String name) {
         return players.stream()
                 .filter(player -> player.getName().equalsIgnoreCase(name))
                 .collect(Collectors.toList());

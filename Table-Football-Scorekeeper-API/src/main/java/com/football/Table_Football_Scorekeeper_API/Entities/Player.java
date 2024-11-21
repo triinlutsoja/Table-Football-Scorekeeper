@@ -1,17 +1,16 @@
 package com.football.Table_Football_Scorekeeper_API.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity
+@Entity // Marks this as a JPA entity
+@Table(name = "player") // Maps to the 'player' table
 public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long playerId;
 
+    @Column(nullable = false, unique = true) // Name cannot be null and must be unique
     private String name;
 
     public Player() {}

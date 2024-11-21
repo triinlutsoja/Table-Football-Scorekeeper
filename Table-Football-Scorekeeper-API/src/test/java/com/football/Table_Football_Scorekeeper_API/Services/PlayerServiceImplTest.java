@@ -1,9 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import com.football.Table_Football_Scorekeeper_API.Exceptions.DuplicatePlayerException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.InMemoryPlayerRepository;
-import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepositoryImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

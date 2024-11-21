@@ -27,7 +27,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // Check for duplicates
-        List<Player> existingPlayers = playerRepository.getPlayersByName(player.getName());
+        List<Player> existingPlayers = playerRepository.findByNameIgnoreCase(player.getName());
         if (!existingPlayers.isEmpty() ) {
             // Return Optional.empty() if a duplicate exists
             return Optional.empty();
@@ -63,7 +63,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // Check for duplicate names (ignore the player being updated)
-        List<Player> existingPlayers = playerRepository.getPlayersByName(player.getName());
+        List<Player> existingPlayers = playerRepository.findByNameIgnoreCase(player.getName());
         if (!existingPlayers.isEmpty() && !existingPlayers.get(0).getPlayerId().equals(id)) {
             return Optional.empty();  // return empty if name already exists
         }
@@ -86,7 +86,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<Player> getPlayersByName(String name) {
-        List<Player> players = playerRepository.getPlayersByName(name);
+        List<Player> players = playerRepository.findByNameIgnoreCase(name);
         if (players.isEmpty()) {
             return List.of();
         }
