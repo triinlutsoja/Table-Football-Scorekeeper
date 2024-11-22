@@ -16,7 +16,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     private static final String CREATE_PLAYER_TABLE = """
         CREATE TABLE IF NOT EXISTS player (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(50) NOT NULL;
+        name VARCHAR(50) NOT NULL
         );
     """;
 
@@ -40,7 +40,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Optional<Player> addPlayer(Player player) {
-        String insertPlayerSQL = "INSERT INTO player (name) VALUES (?);";
+        String insertPlayerSQL = "INSERT INTO player (name) VALUES (?)";
 
         try (var conn = getConnection();
              var statement = conn.prepareStatement(insertPlayerSQL, java.sql.Statement.RETURN_GENERATED_KEYS)) {
@@ -74,7 +74,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             if (resultSet.next()) { // Check if a result is returned
                 // Create a Player object from the result set
                 Player player = new Player();
-                player.setPlayerId(resultSet.getLong("id")); // Map the "id" column to playerId
+                player.setPlayerId(resultSet.getLong("playerId")); // Map the "id" column to playerId
                 player.setName(resultSet.getString("name")); // Map the "name" column to name
                 return Optional.of(player); // Return the Player wrapped in an Optional
             }
@@ -86,7 +86,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public List<Player> getAllPlayers() {
-        String selectPlayerSQL = "SELECT * FROM player;";
+        String selectPlayerSQL = "SELECT * FROM player";
         List<Player> allPlayers = new ArrayList<>();
 
         try (var conn = getConnection();
@@ -97,7 +97,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             while (resultSet.next()) { // Loop through all rows in the result set
                 // Create a Player object from the current row
                 Player player = new Player();
-                player.setPlayerId(resultSet.getLong("id")); // Map the "id" column to playerId
+                player.setPlayerId(resultSet.getLong("playerId")); // Map the "id" column to playerId
                 player.setName(resultSet.getString("name")); // Map the "name" column to name
                 allPlayers.add(player); // Add the player to the list
             }
@@ -136,7 +136,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
             if (resultSet.next()) {
                 Player updatedPlayer = new Player();
-                updatedPlayer.setPlayerId(resultSet.getLong("id"));
+                updatedPlayer.setPlayerId(resultSet.getLong("playerId"));
                 updatedPlayer.setName(resultSet.getString("name"));
                 return Optional.of(updatedPlayer);
             }
@@ -149,11 +149,48 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public boolean deletePlayer(Long id) {
-        return false;
+        String deletePlayerSQL = "UPDATE FROM player WHERE id = ?";
+        boolean isDeleted = false;
+
+        try (var conn = getConnection();
+             var deleteStatement = conn.prepareStatement(deletePlayerSQL)) {
+
+            deleteStatement.setLong(1, id); // Set parameters for the DELETE statement
+            int rowsAffected = deleteStatement.executeUpdate(); // Execute the DELETE statement
+            isDeleted = rowsAffected > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error deleting player with " + id + ": " + e.getMessage());
+        }
+        return isDeleted;
     }
 
     @Override
     public List<Player> findByNameIgnoreCase(String name) {
-        return List.of();
+
+        if (name == null || name.trim().isEmpty()) {
+            return List.of(); // Return an empty list if the input is invalid
+        }
+
+        String selectPlayerSQL = "SELECT * FROM player WHERE name ILIKE ?";
+        List<Player> playersWithSpecificName = new ArrayList<>();
+
+        try (var conn = getConnection();
+             var statement = conn.prepareStatement(selectPlayerSQL)) {
+
+            statement.setString(1, name + "%");
+            var resultSet = statement.executeQuery(); // Execute the query
+
+            while (resultSet.next()) { // Loop through all rows in the result set
+                // Create a Player object from the current row
+                Player player = new Player();
+                player.setPlayerId(resultSet.getLong("playerId")); // Map the "id" column to playerId
+                player.setName(resultSet.getString("name")); // Map the "name" column to name
+                playersWithSpecificName.add(player); // Add the player to the list
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving all players with the name '" + name + "': " + e.getMessage());
+        }
+        return playersWithSpecificName;
     }
 }
