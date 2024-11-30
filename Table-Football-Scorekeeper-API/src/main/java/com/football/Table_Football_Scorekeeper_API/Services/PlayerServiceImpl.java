@@ -14,9 +14,14 @@ public class PlayerServiceImpl implements PlayerService {
     private final PlayerRepository playerRepository;
 
     // Constructor to inject the repository
-    @Autowired
+    //@Autowired
     public PlayerServiceImpl(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
+    }
+
+    @Override
+    public Optional<Player> addOnePlayer(Player player) {
+        return playerRepository.addOnePlayer(player);
     }
 
     @Override

@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface PlayerService {
 
+    Optional<Player> addOnePlayer(Player player);
+
     Optional<Player> addPlayer(Player player);
 
     Optional<Player> getPlayer(Long id);

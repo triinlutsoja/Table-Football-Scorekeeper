@@ -15,6 +15,11 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     private Long currentId = 1L;  // to simulate auto-increment ID
 
     @Override
+    public Optional<Player> addOnePlayer(Player player) {
+        return null;
+    }
+
+    @Override
     public Optional<Player> addPlayer(Player player) {
         if (player.getPlayerId() == null) {
             player.setPlayerId(currentId++);

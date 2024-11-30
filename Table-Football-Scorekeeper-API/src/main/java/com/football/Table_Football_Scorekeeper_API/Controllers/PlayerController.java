@@ -1,7 +1,9 @@
 package com.football.Table_Football_Scorekeeper_API.Controllers;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepositoryImpl;
 import com.football.Table_Football_Scorekeeper_API.Services.PlayerService;
+import com.football.Table_Football_Scorekeeper_API.Services.PlayerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +17,15 @@ public class PlayerController {
 
     private final PlayerService playerService;
 
-    // Constructor to inject the repository
-    @Autowired
-    public PlayerController(PlayerService playerService) {
-        this.playerService = playerService;
+    public PlayerController() {
+        this.playerService = new PlayerServiceImpl(new PlayerRepositoryImpl());
     }
+
+
 
     @PostMapping
     public ResponseEntity<Player> addPlayer(@RequestBody Player player) {
-        Optional<Player> newPlayer = playerService.addPlayer(player);
+        Optional<Player> newPlayer = playerService.addOnePlayer(player);
         if (newPlayer.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
