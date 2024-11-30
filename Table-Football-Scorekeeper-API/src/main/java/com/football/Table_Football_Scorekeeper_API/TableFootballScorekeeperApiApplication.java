@@ -1,40 +1,36 @@
 package com.football.Table_Football_Scorekeeper_API;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+
+import java.sql.SQLException;
 
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-public class TableFootballScorekeeperApiApplication implements CommandLineRunner {
+@SpringBootApplication
+public class TableFootballScorekeeperApiApplication {
 
-	@Autowired
-	private DatabaseConnection testDatabaseConnection;
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		// SpringApplication.run(TableFootballScorekeeperApiApplication.class, args);
 
-	//@Autowired
-	//private JdbcTemplate jdbcTemplate;
+		// Load JDBC class for MySQL driver. (not always required since JDBC 4.0+ automatically loads drivers)
+		Class.forName("com.mysql.cj.jdbc.Driver");
 
-	public static void main(String[] args) {
-		SpringApplication.run(TableFootballScorekeeperApiApplication.class, args);
+		// create a single instance of the Database class (Singleton Pattern)
+		DatabaseConnection db = DatabaseConnection.instance();  // returns the one AND only instance of the db
+
+		// try to establish connection
+		try {
+			db.connect();
+			System.out.println("Connected.");
+		} catch (SQLException e) {
+			System.out.println("Cannot connect to database.");
+		}
+
+		// try to close connection
+		try {
+			db.close();
+			System.out.println("Disconnected.");
+		} catch (SQLException e) {
+			System.out.println("Cannot close the database connection.");
+		}
 	}
-
-	@Override
-	public void run(String... args) {
-		// Test the database connection on startup
-		testDatabaseConnection.testConnection();
-	}
-
-	/*@PostConstruct
-	public void init() {
-		createTableIfNotExists();
-	}*/
-
-	/*public void createTableIfNotExists() {
-		String sql = "CREATE TABLE IF NOT EXISTS player (player_id SERIAL PRIMARY KEY, name VARCHAR(255))";
-		jdbcTemplate.execute(sql);
-	}*/
-
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerRepository {
-
+    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
     Optional<Player> addOnePlayer(Player player);
 
     Optional<Player> addPlayer(Player player);
@@ -18,8 +18,5 @@ public interface PlayerRepository {
 
     // Custom query methods
 
-    List<Player> findByNameIgnoreCase(String name);
-
-
-
+    List<Player> findByNameIgnoreCase(String name);*/
 }

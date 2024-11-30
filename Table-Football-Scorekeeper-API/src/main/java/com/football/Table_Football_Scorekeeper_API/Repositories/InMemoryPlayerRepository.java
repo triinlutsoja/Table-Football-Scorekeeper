@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryPlayerRepository implements PlayerRepository {
-
+    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
     private final List<Player> players = new ArrayList<Player>();
     private Long currentId = 1L;  // to simulate auto-increment ID
 
@@ -67,5 +67,5 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     public void clearPlayers() {  // method for the tearDown() test in PlayerServiceImplTest
         players.clear();
-    }
+    }*/
 }

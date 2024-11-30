@@ -1,32 +1,30 @@
 package com.football.Table_Football_Scorekeeper_API;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private final DataSource dataSource;
+    private static DatabaseConnection db = new DatabaseConnection();
 
-    // Constructor to manually configure HikariDataSource
-    public DatabaseConnection() {
-        HikariConfig config = new HikariConfig();
+    // The "address" to the MySQL database
+    private static final String dbUrl = "jdbc:mysql://localhost:3306/table_football_db?serverTimezone=UTC";
 
-        // Set your database connection details
-        config.setJdbcUrl("jdbc:postgresql://localhost:5432/table_football_db");
-        config.setUsername("football_admin");
-        config.setPassword("EvoconChamp");
-        config.setMaximumPoolSize(1);
-        config.setPoolName("HikariPool-1");
-        config.setDriverClassName("org.postgresql.Driver");
+    private Connection conn;
 
-        this.dataSource = new HikariDataSource(config);
+    public static DatabaseConnection instance() {
+        return db;
     }
 
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    // private constructor, can't be used from outside the class
+    private DatabaseConnection() {}
+
+    public void connect() throws SQLException {
+        conn = DriverManager.getConnection(dbUrl, "root", "MinuMySQLpar00l");
+    }
+
+    public void close() throws SQLException {
+        conn.close();
     }
 }

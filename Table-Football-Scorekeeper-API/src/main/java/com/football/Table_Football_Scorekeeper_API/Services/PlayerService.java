@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerService {
-
+    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
     Optional<Player> addOnePlayer(Player player);
 
     Optional<Player> addPlayer(Player player);
@@ -20,5 +20,5 @@ public interface PlayerService {
 
     // Custom methods
 
-    List<Player> getPlayersByName(String name);
+    List<Player> getPlayersByName(String name);*/
 }

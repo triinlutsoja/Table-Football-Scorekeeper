@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
-
+    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
     private final PlayerRepository playerRepository;
 
     // Constructor to inject the repository
@@ -96,5 +96,5 @@ public class PlayerServiceImpl implements PlayerService {
             return List.of();
         }
         return players;
-    }
+    }*/
 }

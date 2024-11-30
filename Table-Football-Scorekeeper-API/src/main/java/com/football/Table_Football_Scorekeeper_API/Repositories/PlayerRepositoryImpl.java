@@ -13,6 +13,7 @@ import java.util.Optional;
 @Repository
 public class PlayerRepositoryImpl implements PlayerRepository {
 
+    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
     private final DatabaseConnection databaseConnection = new DatabaseConnection();
 
     public PlayerRepositoryImpl() {
@@ -171,5 +172,5 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             System.err.println("Error retrieving all players with the name '" + name + "': " + e.getMessage());
         }
         return playersWithSpecificName;
-    }
+    }*/
 }

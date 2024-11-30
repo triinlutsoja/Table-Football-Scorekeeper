@@ -14,7 +14,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
-
+    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
     private final PlayerService playerService;
 
     public PlayerController() {
@@ -77,5 +77,5 @@ public class PlayerController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(players);
-    }
+    }*/
 }
