@@ -1,10 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Entities;
 
 import jakarta.persistence.*;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-@Entity // Marks this as a JPA entity
-@Table(name = "player") // Maps to the 'player' table
 public class Player {
 
     @Id
