@@ -14,24 +14,23 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
-    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
+
     private final PlayerService playerService;
 
-    public PlayerController() {
-        this.playerService = new PlayerServiceImpl(new PlayerRepositoryImpl());
+    // DI through constructor
+    public PlayerController(PlayerService playerService) {
+        this.playerService = playerService;
     }
-
-
 
     @PostMapping
     public ResponseEntity<Player> addPlayer(@RequestBody Player player) {
-        Optional<Player> newPlayer = playerService.addOnePlayer(player);
+        Optional<Player> newPlayer = playerService.addPlayer(player);
         if (newPlayer.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.status(201).body(newPlayer.get());
     }
-
+/* COMMENTING OUT
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
         Optional<Player> existingPlayer = playerService.getPlayer(id);

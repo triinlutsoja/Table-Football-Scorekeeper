@@ -1,5 +1,6 @@
 package com.football.Table_Football_Scorekeeper_API;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.sql.SQLException;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 public class TableFootballScorekeeperApiApplication {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		// SpringApplication.run(TableFootballScorekeeperApiApplication.class, args);
+		SpringApplication.run(TableFootballScorekeeperApiApplication.class, args);
 
 		// Load JDBC class for MySQL driver. (not always required since JDBC 4.0+ automatically loads drivers)
 		Class.forName("com.mysql.cj.jdbc.Driver");

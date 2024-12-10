@@ -5,16 +5,12 @@ import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-
 
 @Repository
 public class PlayerRepositoryImpl implements PlayerRepository {
 
-    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
-    private final DatabaseConnection databaseConnection = new DatabaseConnection();
+    DatabaseConnection db = DatabaseConnection.instance();
 
     public PlayerRepositoryImpl() {
     }
@@ -24,10 +20,11 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         String insertPlayerSQL = "INSERT INTO player (name) VALUES (?)";
         int rowsAffected = 0;
 
-        try (Connection conn = databaseConnection.getConnection()) {
-            try (PreparedStatement statement = conn.prepareStatement(insertPlayerSQL)) {
-                statement.setString(1, player.getName());
-                rowsAffected = statement.executeUpdate();
+        try (Connection conn = db.getConnection()) {
+            try (PreparedStatement stmt = conn.prepareStatement(insertPlayerSQL)) {
+                stmt.setString(1, player.getName());
+                rowsAffected = stmt.executeUpdate();
+                stmt.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,8 +35,12 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             return Optional.empty();
         }
 
+        // if rows were indeed added, query from the db what was added
+
         return null; // TODO: Mul on vaja tagastada see viimati lisatud rida.
     }
+
+    /* COMMENTING OUT
 
     @Override
     public Optional<Player> getPlayer(Long id) {

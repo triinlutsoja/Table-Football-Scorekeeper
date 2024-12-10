@@ -1,16 +1,14 @@
 package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface PlayerRepository {
-    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
-    Optional<Player> addOnePlayer(Player player);
 
     Optional<Player> addPlayer(Player player);
+    /* COMMENTING OUT
     Optional<Player> getPlayer(Long id);
     List<Player> getAllPlayers();
     Optional<Player> updatePlayer(Long id, Player player);

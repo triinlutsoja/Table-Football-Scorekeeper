@@ -10,14 +10,9 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryPlayerRepository implements PlayerRepository {
-    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
+
     private final List<Player> players = new ArrayList<Player>();
     private Long currentId = 1L;  // to simulate auto-increment ID
-
-    @Override
-    public Optional<Player> addOnePlayer(Player player) {
-        return null;
-    }
 
     @Override
     public Optional<Player> addPlayer(Player player) {
@@ -27,6 +22,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
         players.add(player);
         return Optional.of(player);
     }
+    /* COMMENT OUT
 
     @Override
     public Optional<Player> getPlayer(Long id) {

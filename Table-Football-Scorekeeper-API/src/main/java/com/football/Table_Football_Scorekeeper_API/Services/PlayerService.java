@@ -5,11 +5,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlayerService {
-    /*COMMENTING EVERYTHING OUT UNTIL I GET DB CONNECTION
-    Optional<Player> addOnePlayer(Player player);
 
     Optional<Player> addPlayer(Player player);
-
+/* COMMENTING OUT
     Optional<Player> getPlayer(Long id);
 
     List<Player> getAllPlayers();

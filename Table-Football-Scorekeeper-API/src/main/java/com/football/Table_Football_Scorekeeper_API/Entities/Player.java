@@ -3,7 +3,7 @@ package com.football.Table_Football_Scorekeeper_API.Entities;
 import com.football.Table_Football_Scorekeeper_API.Annotations.Entity;
 import com.football.Table_Football_Scorekeeper_API.Annotations.Field;
 
-@Entity("player")
+@Entity(tableName = "player")
 public class Player {
 
     @Field(isPrimaryKey = true)
