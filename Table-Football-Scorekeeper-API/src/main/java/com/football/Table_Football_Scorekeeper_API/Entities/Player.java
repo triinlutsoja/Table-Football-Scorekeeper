@@ -1,14 +1,15 @@
 package com.football.Table_Football_Scorekeeper_API.Entities;
 
-import jakarta.persistence.*;
+import com.football.Table_Football_Scorekeeper_API.Annotations.Entity;
+import com.football.Table_Football_Scorekeeper_API.Annotations.Field;
 
+@Entity("player")
 public class Player {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Field(isPrimaryKey = true)
     private Long playerId;
 
-    @Column(nullable = false, unique = true) // Name cannot be null and must be unique
+    @Field
     private String name;
 
     public Player() {}
