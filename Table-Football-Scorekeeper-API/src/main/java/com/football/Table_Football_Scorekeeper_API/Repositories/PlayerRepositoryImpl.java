@@ -11,6 +11,7 @@ import java.util.Optional;
 public class PlayerRepositoryImpl implements PlayerRepository {
 
     DatabaseConnection db = DatabaseConnection.instance();
+    private final Connection connection = db.getConnection();
 
     public PlayerRepositoryImpl() {
     }

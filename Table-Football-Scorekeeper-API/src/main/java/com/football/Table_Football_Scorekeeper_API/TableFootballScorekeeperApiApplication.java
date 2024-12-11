@@ -16,7 +16,7 @@ public class TableFootballScorekeeperApiApplication {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 
 		// create a single instance of the Database class (Singleton Pattern)
-		DatabaseConnection db = DatabaseConnection.instance();  // returns the one AND only instance of the db
+		DatabaseConnection db = DatabaseConnection.instance();  // one AND only instance of the db connection
 
 		// try to establish connection
 		try {

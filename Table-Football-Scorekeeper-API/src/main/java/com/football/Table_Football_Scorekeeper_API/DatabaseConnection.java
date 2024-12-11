@@ -20,11 +20,11 @@ public class DatabaseConnection {
     // private constructor, can't be used from outside the class
     private DatabaseConnection() {}
 
-    public Connection getConnection() {
+    public Connection getConnection() {  // Retrieves the established connection for use elsewhere
         return conn;
     }
 
-    public void connect() throws SQLException {
+    public void connect() throws SQLException {  // Establishes a connection to the database using the provided URL, username, and password.
         conn = DriverManager.getConnection(dbUrl, "root", "MinuMySQLpar00l");
     }
 

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
 public class InMemoryPlayerRepository implements PlayerRepository {
 
     private final List<Player> players = new ArrayList<Player>();
