@@ -21,10 +21,10 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Optional<Player> addPlayer(Player player) {
         // Validate that the player's name is not null
-        if (player.getName() == null) {
+        if (player.getName() == null || player.getName().isEmpty()) {
             return Optional.empty();  // Return empty if name is null
         }
-        return null;
+        return playerRepository.addPlayer(player);
     }
 /* COMMENTING OUT
         // Check for duplicates

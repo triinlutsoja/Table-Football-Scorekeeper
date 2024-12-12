@@ -10,11 +10,80 @@ import java.util.Optional;
 @Repository
 public class PlayerRepositoryImpl implements PlayerRepository {
 
+    private final DatabaseConnection db;
+
+    static {
+        try {
+            // Load JDBC class for MySQL driver. (not always required since JDBC 4.0+ automatically loads drivers)
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL Driver not found", e);
+        }
+    }
+
+    public PlayerRepositoryImpl() {
+        // create a single instance of the DatabaseConnection class (Singleton Pattern)
+        db = DatabaseConnection.instance(); // one AND only instance of the db connection
+    }
+
+    @Override
+    public Optional<Player> addPlayer(Player player) {
+        Connection conn = null;
+
+        // try to establish connection
+        try {
+            db.connect();
+            System.out.println("Connected.");
+
+            // Get connection, execute action, add player to the database
+            conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO player (name) VALUES(?)", Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, player.getName());
+            stmt.executeUpdate();
+
+            // Retrieve the auto-generated ID
+            Long generatedId;
+            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                generatedId = generatedKeys.getLong(1);  // The first column is the generated key
+
+                // Query the database to fetch the just added player and return it
+                stmt = conn.prepareStatement("SELECT playerId, name FROM player WHERE playerId = ?");
+                stmt.setLong(1, generatedId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    Player retrievedPlayer = new Player();
+                    Long retrievedId = rs.getLong("playerId");
+                    String retrievedName = rs.getString("name");
+                    retrievedPlayer.setPlayerId(retrievedId);
+                    retrievedPlayer.setName(retrievedName);
+                    return Optional.of(retrievedPlayer);
+                }
+            }
+            stmt.close();
+        } catch (SQLException e) {
+            System.out.println("Cannot connect to database.");
+        } finally {
+            if (conn != null) {
+                // try to close connection
+                try {
+                    db.close();
+                    System.out.println("Disconnected.");
+                } catch (SQLException e) {
+                    System.out.println("Cannot close the database connection.");
+                }
+            }
+        }
+        // If adding a new player fails, return empty
+        return Optional.empty();
+    }
+
+    /* trying to recreate above
+
     DatabaseConnection db = DatabaseConnection.instance();
     private final Connection connection = db.getConnection();
 
-    public PlayerRepositoryImpl() {
-    }
+    public PlayerRepositoryImpl() {}
 
     @Override
     public Optional<Player> addPlayer(Player player) {
@@ -39,7 +108,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         // if rows were indeed added, query from the db what was added
 
         return null; // TODO: Mul on vaja tagastada see viimati lisatud rida.
-    }
+    } */
 
     /* COMMENTING OUT
 
