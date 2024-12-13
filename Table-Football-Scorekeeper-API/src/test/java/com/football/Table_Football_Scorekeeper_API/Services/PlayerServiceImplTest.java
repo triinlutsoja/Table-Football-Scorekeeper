@@ -41,7 +41,7 @@ class PlayerServiceImplTest {
         Optional<Player> addedPlayer = playerService.addPlayer(newPlayer);
 
         // Assert
-        assertEquals(newPlayer.getPlayerId(), addedPlayer.get().getPlayerId());
+        assertEquals(newPlayer.getId(), addedPlayer.get().getId());
         assertEquals(newPlayer.getName(), addedPlayer.get().getName());
         assertEquals(3, playerRepository.getAllPlayers().size());
     }

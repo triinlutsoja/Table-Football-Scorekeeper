@@ -65,7 +65,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         // Check for duplicate names (ignore the player being updated)
         List<Player> existingPlayers = playerRepository.findByNameIgnoreCase(player.getName());
-        if (!existingPlayers.isEmpty() && !existingPlayers.get(0).getPlayerId().equals(id)) {
+        if (!existingPlayers.isEmpty() && !existingPlayers.get(0).getId().equals(id)) {
             return Optional.empty();  // return empty if name already exists
         }
         Optional<Player> existingPlayer = playerRepository.getPlayer(id);

@@ -34,7 +34,12 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         try {
             db.connect();
             System.out.println("Connected.");
+        } catch (SQLException e) {
+            System.out.println("Failed to connect to database: " + e.getMessage());
+            return Optional.empty();  // Exit early if the connection fails
+        }
 
+        try {
             // Get connection, execute action, add player to the database
             conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO player (name) VALUES(?)", Statement.RETURN_GENERATED_KEYS);
@@ -42,27 +47,26 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             stmt.executeUpdate();
 
             // Retrieve the auto-generated ID
-            Long generatedId;
             ResultSet generatedKeys = stmt.getGeneratedKeys();
             if (generatedKeys.next()) {
-                generatedId = generatedKeys.getLong(1);  // The first column is the generated key
+                Long generatedId = generatedKeys.getLong(1);  // The first column is the generated key
 
                 // Query the database to fetch the just added player and return it
-                stmt = conn.prepareStatement("SELECT playerId, name FROM player WHERE playerId = ?");
+                stmt = conn.prepareStatement("SELECT id, name FROM player WHERE id = ?");
                 stmt.setLong(1, generatedId);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     Player retrievedPlayer = new Player();
-                    Long retrievedId = rs.getLong("playerId");
+                    Long retrievedId = rs.getLong("id");
                     String retrievedName = rs.getString("name");
-                    retrievedPlayer.setPlayerId(retrievedId);
+                    retrievedPlayer.setId(retrievedId);
                     retrievedPlayer.setName(retrievedName);
                     return Optional.of(retrievedPlayer);
                 }
             }
             stmt.close();
         } catch (SQLException e) {
-            System.out.println("Cannot connect to database.");
+            System.out.println("Error occurred during SQL operation: " + e.getMessage());
         } finally {
             if (conn != null) {
                 // try to close connection
@@ -125,7 +129,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             if (resultSet.next()) { // Check if a result is returned
                 // Create a Player object from the result set
                 Player player = new Player();
-                player.setPlayerId(resultSet.getLong("playerId")); // Map the "id" column to playerId
+                player.setId(resultSet.getLong("Id")); // Map the "id" column to id
                 player.setName(resultSet.getString("name")); // Map the "name" column to name
                 return Optional.of(player); // Return the Player wrapped in an Optional
             }
@@ -148,7 +152,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             while (resultSet.next()) { // Loop through all rows in the result set
                 // Create a Player object from the current row
                 Player player = new Player();
-                player.setPlayerId(resultSet.getLong("playerId")); // Map the "id" column to playerId
+                player.setId(resultSet.getLong("Id")); // Map the "id" column to id
                 player.setName(resultSet.getString("name")); // Map the "name" column to name
                 allPlayers.add(player); // Add the player to the list
             }
@@ -187,7 +191,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
             if (resultSet.next()) {
                 Player updatedPlayer = new Player();
-                updatedPlayer.setPlayerId(resultSet.getLong("playerId"));
+                updatedPlayer.setId(resultSet.getLong("id"));
                 updatedPlayer.setName(resultSet.getString("name"));
                 return Optional.of(updatedPlayer);
             }
@@ -235,7 +239,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             while (resultSet.next()) { // Loop through all rows in the result set
                 // Create a Player object from the current row
                 Player player = new Player();
-                player.setPlayerId(resultSet.getLong("playerId")); // Map the "id" column to playerId
+                player.setId(resultSet.getLong("id")); // Map the "id" column to id
                 player.setName(resultSet.getString("name")); // Map the "name" column to name
                 playersWithSpecificName.add(player); // Add the player to the list
             }

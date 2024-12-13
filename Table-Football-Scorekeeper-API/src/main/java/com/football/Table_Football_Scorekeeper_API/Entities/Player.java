@@ -7,7 +7,7 @@ import com.football.Table_Football_Scorekeeper_API.Annotations.Field;
 public class Player {
 
     @Field(isPrimaryKey = true)
-    private Long playerId;
+    private Long id;
 
     @Field
     private String name;
@@ -18,12 +18,12 @@ public class Player {
         this.name = name;
     }
 
-    public Long getPlayerId() {
-        return playerId;
+    public Long getId() {
+        return id;
     }
 
-    public void setPlayerId(Long player_id) {
-        this.playerId = player_id;
+    public void setId(Long player_id) {
+        this.id = player_id;
     }
 
     public String getName() {

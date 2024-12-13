@@ -1,12 +1,10 @@
 package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class InMemoryPlayerRepository implements PlayerRepository {
 
@@ -15,8 +13,8 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     @Override
     public Optional<Player> addPlayer(Player player) {
-        if (player.getPlayerId() == null) {
-            player.setPlayerId(currentId++);
+        if (player.getId() == null) {
+            player.setId(currentId++);
         }
         players.add(player);
         return Optional.of(player);
@@ -26,7 +24,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     @Override
     public Optional<Player> getPlayer(Long id) {
         return players.stream()
-                .filter(player -> player.getPlayerId().equals(id))
+                .filter(player -> player.getId().equals(id))
                 .findFirst();  // Returns Optional.empty() if not found
     }
 
@@ -38,7 +36,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
         for (Player p : players) {
-            if (p.getPlayerId().equals(id)) {
+            if (p.getId().equals(id)) {
                 p.setName(player.getName());
                 return Optional.of(p);
             }
@@ -48,7 +46,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     @Override
     public boolean deletePlayer(Long id) {
-        return players.removeIf(player -> player.getPlayerId().equals(id));
+        return players.removeIf(player -> player.getId().equals(id));
     }
 
     // Custom methods
