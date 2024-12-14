@@ -1,10 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Controllers;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
-import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepositoryImpl;
 import com.football.Table_Football_Scorekeeper_API.Services.PlayerService;
-import com.football.Table_Football_Scorekeeper_API.Services.PlayerServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

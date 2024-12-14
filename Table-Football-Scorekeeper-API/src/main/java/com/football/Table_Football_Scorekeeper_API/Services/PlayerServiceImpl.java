@@ -3,7 +3,6 @@ package com.football.Table_Football_Scorekeeper_API.Services;
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
