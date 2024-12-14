@@ -34,27 +34,19 @@ public class PlayerServiceImpl implements PlayerService {
             throw new RuntimeException("PlayerService failed to add player.", e);
         }
     }
-/* COMMENTING OUT
-        // Check for duplicates
-        List<Player> existingPlayers = playerRepository.findByNameIgnoreCase(player.getName());
-        if (!existingPlayers.isEmpty() ) {
-            // Return Optional.empty() if a duplicate exists
-            return Optional.empty();
-        }
-
-        // Add the player if all conditions are met
-        return playerRepository.addPlayer(player);
-    }
 
     @Override
     public Optional<Player> getPlayer(Long id) {
-        Optional<Player> existingPlayer = playerRepository.getPlayer(id);
 
-        if (existingPlayer.isEmpty()) {
-            return Optional.empty();
+        try {
+            return playerRepository.getPlayer(id);
+        } catch (RuntimeException e) {
+            System.err.println("Failed to retrieve player: " + e.getMessage());
+            throw new RuntimeException("PlayerService failed to retrieve player.", e);
         }
-        return existingPlayer;
     }
+
+    /* COMMENTING OUT
 
     @Override
     public List<Player> getAllPlayers() {

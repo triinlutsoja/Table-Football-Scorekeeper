@@ -27,15 +27,17 @@ public class PlayerController {
         Player newPlayer = playerService.addPlayer(player);
         return ResponseEntity.status(201).body(newPlayer);
     }
-/* COMMENTING OUT
+
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
         Optional<Player> existingPlayer = playerService.getPlayer(id);
-        if (existingPlayer.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        if (existingPlayer.isPresent()) {
+            return ResponseEntity.status(200).body(existingPlayer.get());
         }
-        return ResponseEntity.status(200).body(existingPlayer.get());
+        return ResponseEntity.status(404).build();
     }
+
+    /* COMMENTING OUT
 
     @GetMapping
     public ResponseEntity<List<Player>> getAllPlayers() {

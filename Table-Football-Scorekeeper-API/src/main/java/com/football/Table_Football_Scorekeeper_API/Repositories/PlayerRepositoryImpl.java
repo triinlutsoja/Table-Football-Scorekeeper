@@ -33,7 +33,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         // try to establish connection
         try {
             db.connect();
-            System.out.println("Connected.");
+            System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
         }
@@ -81,62 +81,37 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         throw new RuntimeException("Failed to add player to the database.");
     }
 
-    /* trying to recreate above
-
-    DatabaseConnection db = DatabaseConnection.instance();
-    private final Connection connection = db.getConnection();
-
-    public PlayerRepositoryImpl() {}
-
-    @Override
-    public Optional<Player> addPlayer(Player player) {
-        String insertPlayerSQL = "INSERT INTO player (name) VALUES (?)";
-        int rowsAffected = 0;
-
-        try (Connection conn = db.getConnection()) {
-            try (PreparedStatement stmt = conn.prepareStatement(insertPlayerSQL)) {
-                stmt.setString(1, player.getName());
-                rowsAffected = stmt.executeUpdate();
-                stmt.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // If no rows were added, return an empty Optional
-        if (rowsAffected == 0) {
-            return Optional.empty();
-        }
-
-        // if rows were indeed added, query from the db what was added
-
-        return null; // TODO: Mul on vaja tagastada see viimati lisatud rida.
-    } */
-
-    /* COMMENTING OUT
-
     @Override
     public Optional<Player> getPlayer(Long id) {
-        String selectPlayerSQL = "SELECT * FROM player WHERE id = ?";
+        // try to establish connection
+        try {
+            db.connect();
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
+        }
 
-        try (var conn = getConnection();
-             var statement = conn.prepareStatement(selectPlayerSQL)) {
+        // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
+        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
 
-            statement.setLong(1, id); // Set the ID parameter in the query
-            var resultSet = statement.executeQuery(); // Execute the query
+            stmt.setLong(1, id); // Set the ID parameter in the query
+            ResultSet rs = stmt.executeQuery(); // Execute the query
 
-            if (resultSet.next()) { // Check if a result is returned
+            if (rs.next()) { // Check if a result is returned
                 // Create a Player object from the result set
-                Player player = new Player();
-                player.setId(resultSet.getLong("Id")); // Map the "id" column to id
-                player.setName(resultSet.getString("name")); // Map the "name" column to name
-                return Optional.of(player); // Return the Player wrapped in an Optional
+                Player retrievedPlayer = new Player();
+                retrievedPlayer.setId(rs.getLong("id")); // Map the "id" column to id
+                retrievedPlayer.setName(rs.getString("name")); // Map the "name" column to name
+                return Optional.of(retrievedPlayer); // Return the Player wrapped in an Optional
             }
         } catch (SQLException e) {
-            System.err.println("Error retrieving player: " + e.getMessage());
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return Optional.empty(); // Return empty Optional if no player is found or an error occurs
+        return Optional.empty(); // Return empty Optional if no player with the given id is found
     }
+
+    /* COMMENTING OUT
 
     @Override
     public List<Player> getAllPlayers() {

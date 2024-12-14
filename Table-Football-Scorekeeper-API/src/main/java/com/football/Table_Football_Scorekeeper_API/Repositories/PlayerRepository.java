@@ -8,8 +8,9 @@ import java.util.Optional;
 public interface PlayerRepository {
 
     Player addPlayer(Player player);
-    /* COMMENTING OUT
     Optional<Player> getPlayer(Long id);
+
+    /* COMMENTING OUT
     List<Player> getAllPlayers();
     Optional<Player> updatePlayer(Long id, Player player);
     boolean deletePlayer(Long id);

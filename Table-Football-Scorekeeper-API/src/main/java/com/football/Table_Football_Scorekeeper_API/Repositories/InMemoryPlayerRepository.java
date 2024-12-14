@@ -19,7 +19,6 @@ public class InMemoryPlayerRepository implements PlayerRepository {
         players.add(player);
         return player;
     }
-    /* COMMENT OUT
 
     @Override
     public Optional<Player> getPlayer(Long id) {
@@ -27,6 +26,8 @@ public class InMemoryPlayerRepository implements PlayerRepository {
                 .filter(player -> player.getId().equals(id))
                 .findFirst();  // Returns Optional.empty() if not found
     }
+
+    /* COMMENT OUT
 
     @Override
     public List<Player> getAllPlayers() {
