@@ -8,10 +8,9 @@ public interface PlayerService {
 
     Player addPlayer(Player player);
     Optional<Player> getPlayer(Long id);
-
-    /* COMMENTING OUT
     List<Player> getAllPlayers();
 
+    /* COMMENTING OUT
     Optional<Player> updatePlayer(Long id, Player player);
 
     boolean deletePlayer(Long id);

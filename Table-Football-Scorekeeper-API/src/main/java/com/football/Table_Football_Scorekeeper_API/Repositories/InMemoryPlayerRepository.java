@@ -27,12 +27,12 @@ public class InMemoryPlayerRepository implements PlayerRepository {
                 .findFirst();  // Returns Optional.empty() if not found
     }
 
-    /* COMMENT OUT
-
     @Override
     public List<Player> getAllPlayers() {
         return players;
     }
+
+    /* COMMENTING OUT
 
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {

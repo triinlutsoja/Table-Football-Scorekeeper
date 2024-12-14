@@ -5,6 +5,8 @@ import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -111,30 +113,38 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         return Optional.empty(); // Return empty Optional if no player with the given id is found
     }
 
-    /* COMMENTING OUT
-
     @Override
     public List<Player> getAllPlayers() {
-        String selectPlayerSQL = "SELECT * FROM player";
+
+        // try to establish connection
+        try {
+            db.connect();
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
+        }
+
         List<Player> allPlayers = new ArrayList<>();
 
-        try (var conn = getConnection();
-             var statement = conn.prepareStatement(selectPlayerSQL)) {
+        // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
+        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM player")) {
 
-            var resultSet = statement.executeQuery(); // Execute the query
-
-            while (resultSet.next()) { // Loop through all rows in the result set
-                // Create a Player object from the current row
-                Player player = new Player();
-                player.setId(resultSet.getLong("Id")); // Map the "id" column to id
-                player.setName(resultSet.getString("name")); // Map the "name" column to name
-                allPlayers.add(player); // Add the player to the list
+            ResultSet rs = stmt.executeQuery(); // Execute the query
+            while (rs.next()) { // Check if a result is returned
+                // Create a Player object from the result set
+                Player retrievedPlayer = new Player();
+                retrievedPlayer.setId(rs.getLong("id")); // Map the "id" column to id
+                retrievedPlayer.setName(rs.getString("name")); // Map the "name" column to name
+                allPlayers.add(retrievedPlayer);
             }
+            return allPlayers;  // if no results, list stays empty
         } catch (SQLException e) {
-            System.err.println("Error retrieving all players: " + e.getMessage());
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return allPlayers;
     }
+
+    /* COMMENTING OUT
 
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {

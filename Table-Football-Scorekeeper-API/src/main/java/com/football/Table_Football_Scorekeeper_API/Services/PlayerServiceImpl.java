@@ -37,7 +37,6 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> getPlayer(Long id) {
-
         try {
             return playerRepository.getPlayer(id);
         } catch (RuntimeException e) {
@@ -46,16 +45,16 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    /* COMMENTING OUT
-
     @Override
     public List<Player> getAllPlayers() {
-        List<Player> players = playerRepository.getAllPlayers();
-        if (players.isEmpty()) {
-            return List.of();
+        try {
+            return playerRepository.getAllPlayers();
+        } catch (RuntimeException e) {
+            System.err.println("Failed to retrieve all players: " + e.getMessage());
+            throw new RuntimeException("PlayerService failed to retrieve all players.", e);
         }
-        return players;
     }
+    /* COMMENTING OUT
 
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
