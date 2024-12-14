@@ -24,7 +24,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     public PlayerRepositoryImpl() {
-        // create a single instance of the DatabaseConnection class (Singleton Pattern)
+        // fetch a single instance of the DatabaseConnection class (Singleton Pattern)
         db = DatabaseConnection.instance(); // one AND only instance of the db connection
     }
 

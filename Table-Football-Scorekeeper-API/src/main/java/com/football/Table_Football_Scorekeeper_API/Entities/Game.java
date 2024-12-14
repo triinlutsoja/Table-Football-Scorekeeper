@@ -29,7 +29,6 @@ public class Game {
     public Game() {}
 
     public Game(Long blackId, int scoreGrey, int scoreBlack, Long greyId) {
-        this.timestamp = LocalDateTime.now();  // sets the current timestamp automatically
         this.blackId = blackId;
         this.scoreGrey = scoreGrey;
         this.scoreBlack = scoreBlack;
