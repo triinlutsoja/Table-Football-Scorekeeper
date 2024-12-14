@@ -43,11 +43,11 @@ public class InMemoryPlayerRepository implements PlayerRepository {
         }
         return Optional.empty();
     }
-    /* COMMENTING OUT
+
     @Override
     public boolean deletePlayer(Long id) {
         return players.removeIf(player -> player.getId().equals(id));
-    }*/
+    }
 
     // Custom methods
 

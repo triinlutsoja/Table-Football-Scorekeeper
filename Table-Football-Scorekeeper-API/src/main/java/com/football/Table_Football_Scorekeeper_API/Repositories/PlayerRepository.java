@@ -11,7 +11,7 @@ public interface PlayerRepository {
     Optional<Player> getPlayer(Long id);
     List<Player> getAllPlayers();
     Optional<Player> updatePlayer(Long id, Player player);
-    //boolean deletePlayer(Long id);
+    boolean deletePlayer(Long id);
 
     // Custom query methods
     List<Player> findByNameIgnoreCase(String name);

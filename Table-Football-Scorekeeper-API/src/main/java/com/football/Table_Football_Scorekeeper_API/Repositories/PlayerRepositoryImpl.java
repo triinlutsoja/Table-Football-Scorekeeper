@@ -190,24 +190,38 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         return Optional.empty(); // Return empty if not possible to return
     }
 
-    /* COMMENTING OUT
     @Override
     public boolean deletePlayer(Long id) {
-        String deletePlayerSQL = "UPDATE FROM player WHERE id = ?";
-        boolean isDeleted = false;
 
-        try (var conn = getConnection();
-             var deleteStatement = conn.prepareStatement(deletePlayerSQL)) {
+        // try to establish connection
+        try {
+            db.connect();
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
+        }
 
-            deleteStatement.setLong(1, id); // Set parameters for the DELETE statement
-            int rowsAffected = deleteStatement.executeUpdate(); // Execute the DELETE statement
-            isDeleted = rowsAffected > 0;
+        try (Connection conn = db.getConnection()) {  // fetching the existing connection from DatabaseConnection
 
+            // Check if the player exists
+            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT 1 FROM player WHERE id = ?")) {
+                selectStmt.setLong(1, id);
+                ResultSet rs = selectStmt.executeQuery();
+                if (!rs.next()) {
+                    return false; // If no such player exists, return false
+                }
+            }
+            // Delete the existing player
+            try (PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM player WHERE id = ?")) {
+                deleteStmt.setLong(1, id); // Set parameters for the DELETE statement
+                int rowsAffected = deleteStmt.executeUpdate(); // Execute the DELETE statement
+                return rowsAffected > 0;
+            }
         } catch (SQLException e) {
             System.err.println("Error deleting player with " + id + ": " + e.getMessage());
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return isDeleted;
-    }*/
+    }
 
     @Override
     public List<Player> findByNameIgnoreCase(String name) {

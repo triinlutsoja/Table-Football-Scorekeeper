@@ -71,17 +71,15 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    /* COMMENTING OUT
     @Override
     public boolean deletePlayer(Long id) {
-        Optional<Player> existingPlayer = playerRepository.getPlayer(id);
-
-        if (existingPlayer.isPresent()) {
+        try {
             return playerRepository.deletePlayer(id);
-        } else {
-            return false;
+        } catch (RuntimeException e) {
+            System.err.println("Failed to delete player: " + e.getMessage());
+            throw new RuntimeException("PlayerService failed to delete player.", e);
         }
-    }*/
+    }
 
     @Override
     public List<Player> findByNameIgnoreCase(String name) {

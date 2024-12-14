@@ -10,7 +10,7 @@ public interface PlayerService {
     Optional<Player> getPlayer(Long id);
     List<Player> getAllPlayers();
     Optional<Player> updatePlayer(Long id, Player player);
-    //boolean deletePlayer(Long id);
+    boolean deletePlayer(Long id);
 
     // Custom methods
     List<Player> findByNameIgnoreCase(String name);

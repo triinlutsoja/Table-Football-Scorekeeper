@@ -52,17 +52,13 @@ public class PlayerController {
         return ResponseEntity.status(404).build();
     }
 
-    /* COMMENTING OUT
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
-        Optional<Player> existingPlayer = playerService.getPlayer(id);
-        if (existingPlayer.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (playerService.deletePlayer(id)) {
+            return ResponseEntity.noContent().build();  // 204 No Content shen deletion is successful
         }
-        playerService.deletePlayer(id);
-        return ResponseEntity.ok().build();
-    }*/
+        return ResponseEntity.status(404).build();
+    }
 
     @GetMapping("/by-name")
     public ResponseEntity<List<Player>> findByNameIgnoreCase(@RequestParam String name) {
