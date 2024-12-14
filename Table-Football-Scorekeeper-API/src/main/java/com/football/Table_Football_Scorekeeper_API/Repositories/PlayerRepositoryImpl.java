@@ -144,47 +144,53 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         }
     }
 
-    /* COMMENTING OUT
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
-        String updatePlayerSQL = "UPDATE player SET name = ? WHERE id = ?";
-        String selectUpdatedPlayerSQL = "SELECT * FROM player WHERE id = ?";
-
-        Player existingPlayer;
-
-        try (var conn = getConnection();
-             var updateStatement = conn.prepareStatement(updatePlayerSQL);
-             var selectStatement = conn.prepareStatement(selectUpdatedPlayerSQL)) {
-
-            // Set parameters for the UPDATE statement
-            updateStatement.setString(1, player.getName());
-            updateStatement.setLong(2, id);
-
-            // Execute the UPDATE statement
-            int rowsAffected = updateStatement.executeUpdate();
-
-            // If no rows were updated, return an empty Optional
-            if (rowsAffected == 0) {
-                return Optional.empty();
-            }
-
-            // Fetch the updated player from the database
-            selectStatement.setLong(1, id);
-            var resultSet = selectStatement.executeQuery();
-
-            if (resultSet.next()) {
-                Player updatedPlayer = new Player();
-                updatedPlayer.setId(resultSet.getLong("id"));
-                updatedPlayer.setName(resultSet.getString("name"));
-                return Optional.of(updatedPlayer);
-            }
-
+        // try to establish connection
+        try {
+            db.connect();
+            System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
-            System.err.println("Error updating player: " + e.getMessage());
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
         }
-        return Optional.empty(); // Return empty if update fails
+
+        try (Connection conn = db.getConnection()) {  // fetching the existing connection from DatabaseConnection
+
+            // Check if the player exists
+            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
+                selectStmt.setLong(1, id);
+                ResultSet rs = selectStmt.executeQuery();
+                if (!rs.next()) {
+                    return Optional.empty(); // If no such player exists, return empty
+                }
+            }
+
+            // Update the existing player
+            try (PreparedStatement updateStmt = conn.prepareStatement("UPDATE player SET name = ? WHERE id = ?")) {
+                updateStmt.setString(1, player.getName());
+                updateStmt.setLong(2, id);
+                updateStmt.executeUpdate();
+            }
+
+            // Retrieve updated player from the database
+            try (PreparedStatement retrieveStmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
+                retrieveStmt.setLong(1, id); // Set the ID parameter in the query
+                ResultSet rs = retrieveStmt.executeQuery(); // Execute the query
+
+                if (rs.next()) {
+                    Player updatedPlayer = new Player();
+                    updatedPlayer.setId(rs.getLong("id")); // Map the "id" column to id
+                    updatedPlayer.setName(rs.getString("name")); // Map the "name" column to name
+                    return Optional.of(updatedPlayer); // Return the Player wrapped in an Optional
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+        }
+        return Optional.empty(); // Return empty if not possible to return
     }
 
+    /* COMMENTING OUT
     @Override
     public boolean deletePlayer(Long id) {
         String deletePlayerSQL = "UPDATE FROM player WHERE id = ?";

@@ -43,17 +43,16 @@ public class PlayerController {
         return ResponseEntity.status(200).body(allPlayers);  // returns list, even if db is empty. Nothing wrong there.
     }
 
-    /* COMMENTING OUT
-
     @PutMapping("/{id}")
     public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player) {
-        Optional<Player> existingPlayer = playerService.getPlayer(id);
-        if (existingPlayer.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        Optional<Player> updatedPlayer = playerService.updatePlayer(id, player);
+        if (updatedPlayer.isPresent()) {
+            return ResponseEntity.status(200).body(updatedPlayer.get());
         }
-        Player updatedPlayer = playerService.updatePlayer(id, player).get();
-        return ResponseEntity.ok(updatedPlayer);
+        return ResponseEntity.status(404).build();
     }
+
+    /* COMMENTING OUT
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {

@@ -33,7 +33,6 @@ public class InMemoryPlayerRepository implements PlayerRepository {
         return players;
     }
 
-    /* COMMENTING OUT
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
         for (Player p : players) {
@@ -44,7 +43,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
         }
         return Optional.empty();
     }
-
+    /* COMMENTING OUT
     @Override
     public boolean deletePlayer(Long id) {
         return players.removeIf(player -> player.getId().equals(id));

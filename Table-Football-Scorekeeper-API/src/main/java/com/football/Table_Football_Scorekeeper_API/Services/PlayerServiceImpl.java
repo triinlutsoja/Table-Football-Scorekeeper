@@ -55,24 +55,23 @@ public class PlayerServiceImpl implements PlayerService {
         }
     }
 
-    /* COMMENTING OUT
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
-        if (player.getName() == null) {
-            return Optional.empty();  // Avoid null names
+
+        // Validate that the player's name is not null or empty
+        if (player.getName() == null || player.getName().isEmpty()) {
+            throw new ValidationException("Player name cannot be null or empty.");
         }
 
-        // Check for duplicate names (ignore the player being updated)
-        List<Player> existingPlayers = playerRepository.findByNameIgnoreCase(player.getName());
-        if (!existingPlayers.isEmpty() && !existingPlayers.get(0).getId().equals(id)) {
-            return Optional.empty();  // return empty if name already exists
+        try {
+            return playerRepository.updatePlayer(id, player);
+        } catch (RuntimeException e) {
+            System.err.println("Failed to update player: " + e.getMessage());
+            throw new RuntimeException("PlayerService failed to update player.", e);
         }
-        Optional<Player> existingPlayer = playerRepository.getPlayer(id);
-
-        // Proceed with the update if no conflicts
-        return playerRepository.updatePlayer(id, player);
     }
 
+    /* COMMENTING OUT
     @Override
     public boolean deletePlayer(Long id) {
         Optional<Player> existingPlayer = playerRepository.getPlayer(id);
