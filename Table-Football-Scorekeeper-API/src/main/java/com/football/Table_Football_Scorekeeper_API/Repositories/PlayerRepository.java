@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PlayerRepository {
 
-    Optional<Player> addPlayer(Player player);
+    Player addPlayer(Player player);
     /* COMMENTING OUT
     Optional<Player> getPlayer(Long id);
     List<Player> getAllPlayers();

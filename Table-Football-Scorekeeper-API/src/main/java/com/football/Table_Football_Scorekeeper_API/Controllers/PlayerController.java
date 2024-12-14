@@ -24,11 +24,8 @@ public class PlayerController {
 
     @PostMapping
     public ResponseEntity<Player> addPlayer(@RequestBody Player player) {
-        Optional<Player> newPlayer = playerService.addPlayer(player);
-        if (newPlayer.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.status(201).body(newPlayer.get());
+        Player newPlayer = playerService.addPlayer(player);
+        return ResponseEntity.status(201).body(newPlayer);
     }
 /* COMMENTING OUT
     @GetMapping("/{id}")

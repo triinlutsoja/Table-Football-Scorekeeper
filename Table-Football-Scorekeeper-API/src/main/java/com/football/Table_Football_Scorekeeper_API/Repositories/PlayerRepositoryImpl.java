@@ -27,7 +27,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public Optional<Player> addPlayer(Player player) {
+    public Player addPlayer(Player player) {
         Connection conn = null;
 
         // try to establish connection
@@ -35,8 +35,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             db.connect();
             System.out.println("Connected.");
         } catch (SQLException e) {
-            System.out.println("Failed to connect to database: " + e.getMessage());
-            return Optional.empty();  // Exit early if the connection fails
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
         }
 
         try {
@@ -61,12 +60,12 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                     String retrievedName = rs.getString("name");
                     retrievedPlayer.setId(retrievedId);
                     retrievedPlayer.setName(retrievedName);
-                    return Optional.of(retrievedPlayer);
+                    return retrievedPlayer;
                 }
             }
             stmt.close();
         } catch (SQLException e) {
-            System.out.println("Error occurred during SQL operation: " + e.getMessage());
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         } finally {
             if (conn != null) {
                 // try to close connection
@@ -78,8 +77,8 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                 }
             }
         }
-        // If adding a new player fails, return empty
-        return Optional.empty();
+        // If adding a new player fails, throw an exception
+        throw new RuntimeException("Failed to add player to the database.");
     }
 
     /* trying to recreate above

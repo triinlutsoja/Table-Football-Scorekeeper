@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +20,19 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Optional<Player> addPlayer(Player player) {
-        // Validate that the player's name is not null
+    public Player addPlayer(Player player) {
+
+        // Validate that the player's name is not null or empty
         if (player.getName() == null || player.getName().isEmpty()) {
-            return Optional.empty();  // Return empty if name is null
+            throw new ValidationException("Player name cannot be null or empty.");
         }
-        return playerRepository.addPlayer(player);
+
+        try {
+            return playerRepository.addPlayer(player);
+        } catch (RuntimeException e) {
+            System.err.println("Failed to add player: " + e.getMessage());
+            throw new RuntimeException("PlayerService failed to add player.", e);
+        }
     }
 /* COMMENTING OUT
         // Check for duplicates
