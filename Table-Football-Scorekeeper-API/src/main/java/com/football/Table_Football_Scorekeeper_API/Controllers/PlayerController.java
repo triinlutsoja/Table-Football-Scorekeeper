@@ -63,14 +63,11 @@ public class PlayerController {
         }
         playerService.deletePlayer(id);
         return ResponseEntity.ok().build();
-    }
+    }*/
 
     @GetMapping("/by-name")
-    public ResponseEntity<List<Player>> getPlayersByName(@RequestParam String name) {
-        List<Player> players = playerService.getPlayersByName(name);
-        if (players.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(players);
-    }*/
+    public ResponseEntity<List<Player>> findByNameIgnoreCase(@RequestParam String name) {
+        List<Player> foundPlayers = playerService.findByNameIgnoreCase(name);
+        return ResponseEntity.status(200).body(foundPlayers);  // returns list, even if db is empty. Nothing wrong there.
+    }
 }

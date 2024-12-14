@@ -145,7 +145,6 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     /* COMMENTING OUT
-
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
         String updatePlayerSQL = "UPDATE player SET name = ? WHERE id = ?";
@@ -202,34 +201,38 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             System.err.println("Error deleting player with " + id + ": " + e.getMessage());
         }
         return isDeleted;
-    }
+    }*/
 
     @Override
     public List<Player> findByNameIgnoreCase(String name) {
 
-        if (name == null || name.trim().isEmpty()) {
-            return List.of(); // Return an empty list if the input is invalid
+        // try to establish connection
+        try {
+            db.connect();
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
         }
 
-        String selectPlayerSQL = "SELECT * FROM player WHERE name ILIKE ?";
         List<Player> playersWithSpecificName = new ArrayList<>();
 
-        try (var conn = getConnection();
-             var statement = conn.prepareStatement(selectPlayerSQL)) {
+        // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
+        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM player WHERE LOWER(name) LIKE LOWER(?)")) {
 
-            statement.setString(1, name + "%");
-            var resultSet = statement.executeQuery(); // Execute the query
+            stmt.setString(1, "%" + name + "%"); // Also check whether name is a substring
+            ResultSet rs = stmt.executeQuery(); // Execute the query
 
-            while (resultSet.next()) { // Loop through all rows in the result set
-                // Create a Player object from the current row
-                Player player = new Player();
-                player.setId(resultSet.getLong("id")); // Map the "id" column to id
-                player.setName(resultSet.getString("name")); // Map the "name" column to name
-                playersWithSpecificName.add(player); // Add the player to the list
+            while (rs.next()) { // Check if a result is returned
+                // Create a Player object from the result set
+                Player retrievedPlayer = new Player();
+                retrievedPlayer.setId(rs.getLong("id")); // Map the "id" column to id
+                retrievedPlayer.setName(rs.getString("name")); // Map the "name" column to name
+                playersWithSpecificName.add(retrievedPlayer);
             }
+            return playersWithSpecificName;
         } catch (SQLException e) {
-            System.err.println("Error retrieving all players with the name '" + name + "': " + e.getMessage());
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return playersWithSpecificName;
-    }*/
+    }
 }

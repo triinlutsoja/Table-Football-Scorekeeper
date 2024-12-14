@@ -54,8 +54,8 @@ public class PlayerServiceImpl implements PlayerService {
             throw new RuntimeException("PlayerService failed to retrieve all players.", e);
         }
     }
-    /* COMMENTING OUT
 
+    /* COMMENTING OUT
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
         if (player.getName() == null) {
@@ -82,14 +82,15 @@ public class PlayerServiceImpl implements PlayerService {
         } else {
             return false;
         }
-    }
+    }*/
 
     @Override
-    public List<Player> getPlayersByName(String name) {
-        List<Player> players = playerRepository.findByNameIgnoreCase(name);
-        if (players.isEmpty()) {
-            return List.of();
+    public List<Player> findByNameIgnoreCase(String name) {
+        try {
+            return playerRepository.findByNameIgnoreCase(name);
+        } catch (RuntimeException e) {
+            System.err.println("Failed to retrieve all players with the name " + name + "." + e.getMessage());
+            throw new RuntimeException("PlayerService failed to retrieve all players with a specific name.", e);
         }
-        return players;
-    }*/
+    }
 }

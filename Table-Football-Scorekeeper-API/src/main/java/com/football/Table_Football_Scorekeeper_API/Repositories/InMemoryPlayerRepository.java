@@ -5,6 +5,7 @@ import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class InMemoryPlayerRepository implements PlayerRepository {
 
@@ -33,7 +34,6 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     }
 
     /* COMMENTING OUT
-
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
         for (Player p : players) {
@@ -48,7 +48,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     @Override
     public boolean deletePlayer(Long id) {
         return players.removeIf(player -> player.getId().equals(id));
-    }
+    }*/
 
     // Custom methods
 
@@ -61,5 +61,5 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     public void clearPlayers() {  // method for the tearDown() test in PlayerServiceImplTest
         players.clear();
-    }*/
+    }
 }
