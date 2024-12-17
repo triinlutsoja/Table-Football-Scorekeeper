@@ -35,6 +35,14 @@ public class Game {
         this.greyId = greyId;
     }
 
+    public Game(LocalDateTime timestamp, Long greyId, Long blackId, int scoreGrey, int scoreBlack) {
+        this.timestamp = timestamp;
+        this.greyId = greyId;
+        this.blackId = blackId;
+        this.scoreGrey = scoreGrey;
+        this.scoreBlack = scoreBlack;
+    }
+
     public Long getId() {
         return id;
     }

@@ -32,7 +32,6 @@ public class GameRepositoryImpl implements GameRepository {
 
     @Override
     public Game addGame(Game game) {
-        Connection conn = null;
 
         // try to establish connection
         try {
@@ -42,12 +41,12 @@ public class GameRepositoryImpl implements GameRepository {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
         }
 
-        try {
-            // Get connection, execute action, add game to the database
-            conn = db.getConnection();
-            PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO game (greyId, blackId, scoreGrey, " +
-                            "scoreBlack) VALUES(?,?,?,?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS);
+        // Get connection, execute action, add game to the database
+        try (Connection conn = db.getConnection();
+             PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO game (greyId, blackId, scoreGrey, " +
+                        "scoreBlack) VALUES(?,?,?,?)",
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
+
             insertStmt.setLong(1,game.getGreyId());
             insertStmt.setLong(2,game.getBlackId());
             insertStmt.setInt(3,game.getScoreGrey());
@@ -77,16 +76,6 @@ public class GameRepositoryImpl implements GameRepository {
             insertStmt.close();
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
-        } finally {
-            if (conn != null) {
-                // try to close connection
-                try {
-                    db.close();
-                    System.out.println("Disconnected.");
-                } catch (SQLException e) {
-                    System.out.println("Cannot close the database connection.");
-                }
-            }
         }
         // If adding a new game fails, throw an exception
         throw new RuntimeException("Failed to add game to the database.");
