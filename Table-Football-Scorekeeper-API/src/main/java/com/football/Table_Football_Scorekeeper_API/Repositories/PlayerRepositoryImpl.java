@@ -2,12 +2,15 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
+import com.football.Table_Football_Scorekeeper_API.Profile;
+import com.football.Table_Football_Scorekeeper_API.TableFootballScorekeeperApiApplication;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 @Repository
 public class PlayerRepositoryImpl implements PlayerRepository {
@@ -31,10 +34,11 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public Player addPlayer(Player player) {
         Connection conn = null;
+        Properties props = Profile.getProperties("db");
 
         // try to establish connection
         try {
-            db.connect();
+            db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
@@ -85,9 +89,17 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Optional<Player> getPlayer(Long id) {
+
+        Properties props = new Properties();
+        try {
+            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // try to establish connection
         try {
-            db.connect();
+            db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
@@ -116,9 +128,16 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public List<Player> getAllPlayers() {
 
+        Properties props = new Properties();
+        try {
+            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // try to establish connection
         try {
-            db.connect();
+            db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
@@ -146,9 +165,17 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
+
+        Properties props = new Properties();
+        try {
+            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // try to establish connection
         try {
-            db.connect();
+            db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
@@ -193,9 +220,16 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public boolean deletePlayer(Long id) {
 
+        Properties props = new Properties();
+        try {
+            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // try to establish connection
         try {
-            db.connect();
+            db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
@@ -226,9 +260,16 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public List<Player> findByNameIgnoreCase(String name) {
 
+        Properties props = new Properties();
+        try {
+            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // try to establish connection
         try {
-            db.connect();
+            db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);

@@ -8,6 +8,20 @@
 		<version>3.3.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+	<!-- Custom: config folder for different run configurations -->
+	<resources>
+		<resource>
+			<directory>/Users/triinlutsoja/Documents/IT_teemad/Harjutamisülesanded/Table-Football-Scorekeeper/Table-Football-Scorekeeper-API/src/main/resources</directory>
+		</resource>
+	</resources>
+	<testResources>
+		<testResource>
+			<directory>/Users/triinlutsoja/Documents/IT_teemad/Harjutamisülesanded/Table-Football-Scorekeeper/Table
+				-Football-Scorekeeper-API/src/test/resources</directory>
+		</testResource>
+	</testResources>
+
 	<groupId>com.football</groupId>
 	<artifactId>Table-Football-Scorekeeper-API</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

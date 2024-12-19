@@ -2,14 +2,14 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
+import com.football.Table_Football_Scorekeeper_API.TableFootballScorekeeperApiApplication;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import java.util.Properties;
 
 @Repository
 public class GameRepositoryImpl implements GameRepository {
@@ -33,9 +33,16 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public Game addGame(Game game) {
 
+        Properties props = new Properties();
+        try {
+            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // try to establish connection
         try {
-            db.connect();
+            db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);

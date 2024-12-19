@@ -3,14 +3,11 @@ package com.football.Table_Football_Scorekeeper_API;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class DatabaseConnection {
 
     private static DatabaseConnection db = new DatabaseConnection();
-
-    // The "address" to the MySQL database
-    private static final String dbUrl = "jdbc:mysql://localhost:3306/table_football_db?serverTimezone=UTC";
-
     private Connection conn;
 
     public static DatabaseConnection instance() {
@@ -24,8 +21,18 @@ public class DatabaseConnection {
         return conn;
     }
 
-    public void connect() throws SQLException {  // Establishes a connection to the database using the provided URL, username, and password.
-        conn = DriverManager.getConnection(dbUrl, "root", "MinuMySQLpar00l");
+    public void connect(Properties props) throws SQLException {  // Establishes a connection to the database using the
+        String server = props.getProperty("server");
+        String port = props.getProperty("port");
+        String database = props.getProperty("database");
+        String user = props.getProperty("user");
+        String password = props.getProperty("password");
+
+        // The "address" to the MySQL database. Server, port and database replaced with %s, supply them as arguments
+        String url = String.format("jdbc:mysql://%s:%s/%s?serverTimezone=UTC", server, port, database);
+
+        // provided URL, username, and password.
+        conn = DriverManager.getConnection(url, user, password);
     }
 
     public void close() throws SQLException {
