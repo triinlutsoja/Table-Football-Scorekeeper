@@ -33,7 +33,6 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Player addPlayer(Player player) {
-        Connection conn = null;
         Properties props = Profile.getProperties("db");
 
         // try to establish connection
@@ -44,22 +43,23 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
         }
 
-        try {
-            // Get connection, execute action, add player to the database
-            conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO player (name) VALUES(?)", Statement.RETURN_GENERATED_KEYS);
-            stmt.setString(1, player.getName());
-            stmt.executeUpdate();
+        // Get connection, execute action, add player to the database
+        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+             PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO player (name) VALUES(?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
+
+            insertStmt.setString(1, player.getName());
+            insertStmt.executeUpdate();
 
             // Retrieve the auto-generated ID
-            ResultSet generatedKeys = stmt.getGeneratedKeys();
+            ResultSet generatedKeys = insertStmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 Long generatedId = generatedKeys.getLong(1);  // The first column is the generated key
 
                 // Query the database to fetch the just added player and return it
-                stmt = conn.prepareStatement("SELECT id, name FROM player WHERE id = ?");
-                stmt.setLong(1, generatedId);
-                ResultSet rs = stmt.executeQuery();
+                PreparedStatement selectStmt = conn.prepareStatement("SELECT id, name FROM player WHERE id = ?");
+                selectStmt.setLong(1, generatedId);
+                ResultSet rs = selectStmt.executeQuery();
                 if (rs.next()) {
                     Player retrievedPlayer = new Player();
                     Long retrievedId = rs.getLong("id");
@@ -68,20 +68,10 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                     retrievedPlayer.setName(retrievedName);
                     return retrievedPlayer;
                 }
+                selectStmt.close();
             }
-            stmt.close();
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
-        } finally {
-            if (conn != null) {
-                // try to close connection
-                try {
-                    db.close();
-                    System.out.println("Disconnected.");
-                } catch (SQLException e) {
-                    System.out.println("Cannot close the database connection.");
-                }
-            }
         }
         // If adding a new player fails, throw an exception
         throw new RuntimeException("Failed to add player to the database.");
@@ -90,12 +80,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public Optional<Player> getPlayer(Long id) {
 
-        Properties props = new Properties();
-        try {
-            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Properties props = Profile.getProperties("db");
 
         // try to establish connection
         try {
@@ -128,12 +113,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public List<Player> getAllPlayers() {
 
-        Properties props = new Properties();
-        try {
-            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Properties props = Profile.getProperties("db");
 
         // try to establish connection
         try {
@@ -166,12 +146,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
 
-        Properties props = new Properties();
-        try {
-            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Properties props = Profile.getProperties("db");
 
         // try to establish connection
         try {
@@ -220,12 +195,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public boolean deletePlayer(Long id) {
 
-        Properties props = new Properties();
-        try {
-            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Properties props = Profile.getProperties("db");
 
         // try to establish connection
         try {
@@ -260,12 +230,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public List<Player> findByNameIgnoreCase(String name) {
 
-        Properties props = new Properties();
-        try {
-            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Properties props = Profile.getProperties("db");
 
         // try to establish connection
         try {

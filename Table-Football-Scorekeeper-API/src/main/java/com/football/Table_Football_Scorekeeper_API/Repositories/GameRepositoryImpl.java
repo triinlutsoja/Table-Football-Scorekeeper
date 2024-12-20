@@ -2,6 +2,7 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
+import com.football.Table_Football_Scorekeeper_API.Profile;
 import com.football.Table_Football_Scorekeeper_API.TableFootballScorekeeperApiApplication;
 import org.springframework.stereotype.Repository;
 
@@ -33,12 +34,7 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public Game addGame(Game game) {
 
-        Properties props = new Properties();
-        try {
-            props.load(TableFootballScorekeeperApiApplication.class.getResourceAsStream("/config/db.dev.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Properties props = Profile.getProperties("db");
 
         // try to establish connection
         try {
