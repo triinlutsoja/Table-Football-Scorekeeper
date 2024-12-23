@@ -2,6 +2,7 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
+import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import com.football.Table_Football_Scorekeeper_API.Profile;
 import com.football.Table_Football_Scorekeeper_API.TableFootballScorekeeperApiApplication;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Properties;
 
 @Repository
@@ -84,12 +86,44 @@ public class GameRepositoryImpl implements GameRepository {
         throw new RuntimeException("Failed to add game to the database.");
     }
 
-    /* COMMENTING OUT FOR NOW
+
     @Override
     public Optional<Game> getGame(Long id) {
-        return Optional.empty();
+        Properties props = Profile.getProperties("db");
+
+        // try to establish connection
+        try {
+            db.connect(props);
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
+        }
+        // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
+        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM game WHERE id = ?")) {
+
+            stmt.setLong(1, id); // Set the ID parameter in the query
+            ResultSet rs = stmt.executeQuery(); // Execute the query
+
+            if (rs.next()) { // Check if a result is returned
+                // Create a Game object from the result set
+                Game retrievedGame = new Game();
+                retrievedGame.setId(rs.getLong("id")); // Map the "id" column to id
+                retrievedGame.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime()); // Map the "timestamp"
+                // column to timestamp
+                retrievedGame.setGreyId(rs.getLong("greyId"));
+                retrievedGame.setBlackId(rs.getLong("blackId"));
+                retrievedGame.setScoreGrey(rs.getInt("scoreGrey"));
+                retrievedGame.setScoreBlack(rs.getInt("scoreBlack"));
+                return Optional.of(retrievedGame); // Return the Game wrapped in an Optional
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+        }
+        return Optional.empty(); // Return empty Optional if no game with the given id is found
     }
 
+/* COMMENTING OUT FOR NOW
     @Override
     public List<Game> getAllGames() {
         return List.of();

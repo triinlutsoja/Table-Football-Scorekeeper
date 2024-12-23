@@ -49,11 +49,17 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    /* COMMENTING OUT FOR NOW
     @Override
     public Optional<Game> getGame(Long id) {
-        return Optional.empty();
+        try {
+            return gameRepository.getGame(id);
+        } catch (RuntimeException e) {
+            System.err.println("Failed to retrieve game: " + e.getMessage());
+            throw new RuntimeException("GameService failed to retrieve game.", e);
+        }
     }
+
+      /* COMMENTING OUT FOR NOW
 
     @Override
     public List<Game> getAllGames() {
