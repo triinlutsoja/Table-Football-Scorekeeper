@@ -217,10 +217,41 @@ public class GameRepositoryImpl implements GameRepository {
         }
         return Optional.empty();
     }
-    /* COMMENTING OUT FOR NOW
+
 
     @Override
     public boolean deleteGame(Long id) {
-        return false;
-    }*/
+        Properties props = Profile.getProperties("db");
+
+        // try to establish connection
+        try {
+            db.connect(props);
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
+        }
+
+        // Get connection, execute query, delete. Try-with-resources closes stuff automatically
+        try (Connection conn = db.getConnection()) {
+
+            // Check if game exists
+            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT 1 FROM game WHERE id=?")) {
+                selectStmt.setLong(1, id);
+                ResultSet rs = selectStmt.executeQuery();
+                if (!rs.next()) {
+                    return false;  // If no such game exists, return false
+                }
+            }
+
+            // Delete the existing game
+            try (PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM game WHERE id=?")){
+                deleteStmt.setLong(1, id);
+                int rowsAffected = deleteStmt.executeUpdate();
+                return rowsAffected > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting player with " + id + ": " + e.getMessage());
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+        }
+    }
 }

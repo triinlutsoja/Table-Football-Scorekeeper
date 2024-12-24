@@ -11,5 +11,5 @@ public interface GameRepository {
     Optional<Game> getGame(Long id);
     List<Game> getAllGames();
     Optional<Game> updateGame(Long id, Game game);
-    // boolean deleteGame(Long id);
+    boolean deleteGame(Long id);
 }

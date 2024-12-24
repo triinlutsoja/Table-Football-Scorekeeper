@@ -102,10 +102,13 @@ public class GameServiceImpl implements GameService {
         }
     }
 
-    /* COMMENTING OUT FOR NOW
-
     @Override
     public boolean deleteGame(Long id) {
-        return false;
-    }*/
+        try {
+            return gameRepository.deleteGame(id);
+        } catch (RuntimeException e) {
+            System.err.println("Failed to delete game: " + e.getMessage());
+            throw new RuntimeException("GameService failed to delete game.", e);
+        }
+    }
 }
