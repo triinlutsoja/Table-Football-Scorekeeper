@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -98,12 +100,12 @@ public class GameRepositoryImpl implements GameRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
         }
-        // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
+        // Get connection, execute query, get game from the database. Try-with-resources closes stuff automatically
         try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM game WHERE id = ?")) {
+             PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id = ?")) {
 
-            stmt.setLong(1, id); // Set the ID parameter in the query
-            ResultSet rs = stmt.executeQuery(); // Execute the query
+            selectStmt.setLong(1, id); // Set the ID parameter in the query
+            ResultSet rs = selectStmt.executeQuery(); // Execute the query
 
             if (rs.next()) { // Check if a result is returned
                 // Create a Game object from the result set
@@ -123,11 +125,42 @@ public class GameRepositoryImpl implements GameRepository {
         return Optional.empty(); // Return empty Optional if no game with the given id is found
     }
 
-/* COMMENTING OUT FOR NOW
     @Override
     public List<Game> getAllGames() {
-        return List.of();
+        Properties props = Profile.getProperties("db");
+        List<Game> games = new ArrayList<>();
+
+        // try to establish connection
+        try {
+            db.connect(props);
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
+        }
+        // Get connection, execute query, get all games from the database. Try-with-resources closes stuff automatically
+        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+             PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game")) {
+
+            ResultSet rs = selectStmt.executeQuery();
+
+            while (rs.next()) {
+                // Create a Game object from the result set
+                Game retrievedGame = new Game();
+                retrievedGame.setId(rs.getLong("id"));
+                retrievedGame.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
+                retrievedGame.setGreyId(rs.getLong("greyId"));
+                retrievedGame.setBlackId(rs.getLong("blackId"));
+                retrievedGame.setScoreGrey(rs.getInt("scoreGrey"));
+                retrievedGame.setScoreBlack(rs.getInt("scoreBlack"));
+                games.add(retrievedGame);
+            }
+            return games; // Return the List of games (even if it's empty)
+        } catch (SQLException e) {
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+        }
     }
+
+    /* COMMENTING OUT FOR NOW
 
     @Override
     public Optional<Game> updateGame(Long id, Game game) {

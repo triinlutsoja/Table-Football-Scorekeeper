@@ -5,6 +5,7 @@ import com.football.Table_Football_Scorekeeper_API.Services.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -32,4 +33,12 @@ public class GameController {
         }
         return ResponseEntity.status(404).build();
     }
+
+    @GetMapping()
+    public ResponseEntity<List<Game>> getAllGames() {
+        List<Game> games = gameService.getAllGames();
+        return ResponseEntity.status(200).body(games);
+    }
+
+
 }
