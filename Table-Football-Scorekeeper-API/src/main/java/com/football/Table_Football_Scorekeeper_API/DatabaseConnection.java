@@ -19,11 +19,12 @@ public class DatabaseConnection {
     // private constructor, can't be used from outside the class
     private DatabaseConnection() {}
 
-    public Connection getConnection() {  // Retrieves the established connection for use elsewhere
+    /*public Connection getConnection() {  // Retrieves the established connection for use elsewhere
         return conn;
-    }
+    }*/
 
-    public void connect(Properties props) throws SQLException {  // Establishes a connection to the database using the
+    public Connection connect(Properties props) throws SQLException {  // Establishes a connection to the database using
+        // the
         String server = props.getProperty("server");
         String port = props.getProperty("port");
         String database = props.getProperty("database");
@@ -39,6 +40,7 @@ public class DatabaseConnection {
 
         // provided URL, username, and password.
         conn = DriverManager.getConnection(url, user, password);
+        return conn;
     }
 
     public void close() throws SQLException {

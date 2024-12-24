@@ -16,6 +16,7 @@ import java.util.Properties;
 public class PlayerRepositoryImpl implements PlayerRepository {
 
     private final DatabaseConnection db;
+    Properties props = Profile.getProperties("db");
 
     /*static {  // TODO: Not necessary, gets loaded automatically
         try {
@@ -33,18 +34,9 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Player addPlayer(Player player) {
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
 
         // Get connection, execute action, add player to the database
-        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO player (name) VALUES(?)",
                      Statement.RETURN_GENERATED_KEYS)) {
 
@@ -80,18 +72,8 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public Optional<Player> getPlayer(Long id) {
 
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
-
         // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
-        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
 
             stmt.setLong(1, id); // Set the ID parameter in the query
@@ -112,21 +94,10 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public List<Player> getAllPlayers() {
-
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
-
         List<Player> allPlayers = new ArrayList<>();
 
         // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
-        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM player")) {
 
             ResultSet rs = stmt.executeQuery(); // Execute the query
@@ -146,17 +117,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
 
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
-
-        try (Connection conn = db.getConnection()) {  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
 
             // Check if the player exists
             try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
@@ -195,17 +156,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     @Override
     public boolean deletePlayer(Long id) {
 
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
-
-        try (Connection conn = db.getConnection()) {  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
 
             // Check if the player exists
             try (PreparedStatement selectStmt = conn.prepareStatement("SELECT 1 FROM player WHERE id = ?")) {
@@ -229,21 +180,10 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public List<Player> findByNameIgnoreCase(String name) {
-
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
-
         List<Player> playersWithSpecificName = new ArrayList<>();
 
         // Get connection, execute query, get player from the database. Try-with-resources closes stuff automatically
-        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM player WHERE LOWER(name) LIKE LOWER(?)")) {
 
             stmt.setString(1, "%" + name + "%"); // Also check whether name is a substring

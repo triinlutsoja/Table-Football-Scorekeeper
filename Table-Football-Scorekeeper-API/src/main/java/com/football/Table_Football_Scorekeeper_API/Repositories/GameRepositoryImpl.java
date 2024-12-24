@@ -20,6 +20,7 @@ import java.util.Properties;
 public class GameRepositoryImpl implements GameRepository {
 
     private final DatabaseConnection db;
+    Properties props = Profile.getProperties("db");
 
     /*static {  // TODO: Not necessary, gets loaded automatically
         try {
@@ -38,18 +39,16 @@ public class GameRepositoryImpl implements GameRepository {
     @Override
     public Game addGame(Game game) {
 
-        Properties props = Profile.getProperties("db");
-
         // try to establish connection
-        try {
+        /*try {
             db.connect(props);
             System.out.println("Connected.");  // TODO: remove printing to console.
         } catch (SQLException e) {
             throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
+        }*/
 
         // Get connection, execute action, add game to the database
-        try (Connection conn = db.getConnection();
+        try (Connection conn = db.connect(props);
              PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO game (greyId, blackId, scoreGrey, " +
                         "scoreBlack) VALUES(?,?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -91,17 +90,9 @@ public class GameRepositoryImpl implements GameRepository {
 
     @Override
     public Optional<Game> getGame(Long id) {
-        Properties props = Profile.getProperties("db");
 
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
         // Get connection, execute query, get game from the database. Try-with-resources closes stuff automatically
-        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id = ?")) {
 
             selectStmt.setLong(1, id); // Set the ID parameter in the query
@@ -127,18 +118,10 @@ public class GameRepositoryImpl implements GameRepository {
 
     @Override
     public List<Game> getAllGames() {
-        Properties props = Profile.getProperties("db");
         List<Game> games = new ArrayList<>();
 
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
         // Get connection, execute query, get all games from the database. Try-with-resources closes stuff automatically
-        try (Connection conn = db.getConnection();  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game")) {
 
             ResultSet rs = selectStmt.executeQuery();
@@ -162,18 +145,9 @@ public class GameRepositoryImpl implements GameRepository {
 
     @Override
     public Optional<Game> updateGame(Long id, Game game) {
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
 
         // Get connection, execute query, update. Try-with-resources closes stuff automatically
-        try (Connection conn = db.getConnection()) {  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
 
             // Check if the game exists
             try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id=?")) {
@@ -221,18 +195,9 @@ public class GameRepositoryImpl implements GameRepository {
 
     @Override
     public boolean deleteGame(Long id) {
-        Properties props = Profile.getProperties("db");
-
-        // try to establish connection
-        try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }
 
         // Get connection, execute query, delete. Try-with-resources closes stuff automatically
-        try (Connection conn = db.getConnection()) {
+        try (Connection conn = db.connect(props)) {
 
             // Check if game exists
             try (PreparedStatement selectStmt = conn.prepareStatement("SELECT 1 FROM game WHERE id=?")) {
