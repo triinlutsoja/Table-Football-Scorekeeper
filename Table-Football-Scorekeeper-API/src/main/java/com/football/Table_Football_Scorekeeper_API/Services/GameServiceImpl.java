@@ -17,9 +17,7 @@ public class GameServiceImpl implements GameService {
         this.gameRepository = gameRepository;
     }
 
-    @Override
-    public Game addGame(Game game) {
-        // Validate game
+    private boolean validateGame(Game game) {
         if (game.getGreyId() == null || game.getGreyId() <= 0L) {
             throw new ValidationException("ID of the grey player cannot be null or less than or equal to zero.");
         }
@@ -40,6 +38,13 @@ public class GameServiceImpl implements GameService {
         if (!greyWins && !blackWins) {
             throw new ValidationException("The game is not finished. One player must reach exactly 8 points, and the other must have fewer than 8.");
         }
+        return true;
+    }
+
+    @Override
+    public Game addGame(Game game) {
+        // Validate game
+        validateGame(game);
 
         try {
             return gameRepository.addGame(game);
@@ -73,26 +78,7 @@ public class GameServiceImpl implements GameService {
     public Optional<Game> updateGame(Long id, Game game) {
 
         // Validate game
-        if (game.getGreyId() == null || game.getGreyId() <= 0L) {
-            throw new ValidationException("ID of the grey player cannot be null or less than or equal to zero.");
-        }
-        if (game.getBlackId() == null || game.getBlackId() <= 0L) {
-            throw new ValidationException("ID of the black player cannot be null or less than or equal to zero.");
-        }
-        if (game.getGreyId() == game.getBlackId()) {
-            throw new ValidationException("Players can't play against themselves.");
-        }
-        if (game.getScoreGrey() < 0 && game.getScoreGrey() > 8) {
-            throw new ValidationException("Score of the grey player cannot be less than zero or more than 8.");
-        }
-        if (game.getScoreBlack() < 0 && game.getScoreBlack() > 8) {
-            throw new ValidationException("Score of the black player cannot be less than zero or more than 8.");
-        }
-        boolean greyWins = (game.getScoreGrey() == 8 && game.getScoreBlack() < 8);
-        boolean blackWins = (game.getScoreBlack() == 8 && game.getScoreGrey() < 8);
-        if (!greyWins && !blackWins) {
-            throw new ValidationException("The game is not finished. One player must reach exactly 8 points, and the other must have fewer than 8.");
-        }
+        validateGame(game);
 
         try {
             return gameRepository.updateGame(id, game);

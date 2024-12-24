@@ -22,15 +22,6 @@ public class GameRepositoryImpl implements GameRepository {
     private final DatabaseConnection db;
     Properties props = Profile.getProperties("db");
 
-    /*static {  // TODO: Not necessary, gets loaded automatically
-        try {
-            // Load JDBC class for MySQL driver. (not always required since JDBC 4.0+ automatically loads drivers)
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("MySQL Driver not found", e);
-        }
-    }*/
-
     public GameRepositoryImpl() {
         // fetch a single instance of the DatabaseConnection class (Singleton Pattern)
         db = DatabaseConnection.instance(); // one AND only instance of the db connection
@@ -38,14 +29,6 @@ public class GameRepositoryImpl implements GameRepository {
 
     @Override
     public Game addGame(Game game) {
-
-        // try to establish connection
-        /*try {
-            db.connect(props);
-            System.out.println("Connected.");  // TODO: remove printing to console.
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
-        }*/
 
         // Get connection, execute action, add game to the database
         try (Connection conn = db.connect(props);

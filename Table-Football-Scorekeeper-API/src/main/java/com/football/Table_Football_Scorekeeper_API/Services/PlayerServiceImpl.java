@@ -18,13 +18,18 @@ public class PlayerServiceImpl implements PlayerService {
         this.playerRepository = playerRepository;
     }
 
-    @Override
-    public Player addPlayer(Player player) {
-
+    private boolean validatePlayer(Player player) {
         // Validate that the player's name is not null or empty
         if (player.getName() == null || player.getName().isEmpty()) {
             throw new ValidationException("Player name cannot be null or empty.");
         }
+        return true;
+    }
+
+    @Override
+    public Player addPlayer(Player player) {
+        // Validate player
+        validatePlayer(player);
 
         try {
             return playerRepository.addPlayer(player);
@@ -56,11 +61,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> updatePlayer(Long id, Player player) {
-
-        // Validate that the player's name is not null or empty
-        if (player.getName() == null || player.getName().isEmpty()) {
-            throw new ValidationException("Player name cannot be null or empty.");
-        }
+        // Validate player
+        validatePlayer(player);
 
         try {
             return playerRepository.updatePlayer(id, player);
