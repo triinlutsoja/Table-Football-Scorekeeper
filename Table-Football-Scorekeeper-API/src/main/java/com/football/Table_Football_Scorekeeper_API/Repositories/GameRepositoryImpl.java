@@ -21,14 +21,14 @@ public class GameRepositoryImpl implements GameRepository {
 
     private final DatabaseConnection db;
 
-    static {
+    /*static {  // TODO: Not necessary, gets loaded automatically
         try {
             // Load JDBC class for MySQL driver. (not always required since JDBC 4.0+ automatically loads drivers)
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("MySQL Driver not found", e);
         }
-    }
+    }*/
 
     public GameRepositoryImpl() {
         // fetch a single instance of the DatabaseConnection class (Singleton Pattern)
@@ -160,12 +160,64 @@ public class GameRepositoryImpl implements GameRepository {
         }
     }
 
-    /* COMMENTING OUT FOR NOW
-
     @Override
     public Optional<Game> updateGame(Long id, Game game) {
+        Properties props = Profile.getProperties("db");
+
+        // try to establish connection
+        try {
+            db.connect(props);
+            System.out.println("Connected.");  // TODO: remove printing to console.
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to connect to database: " + e.getMessage(), e);
+        }
+
+        // Get connection, execute query, update. Try-with-resources closes stuff automatically
+        try (Connection conn = db.getConnection()) {  // fetching the existing connection from DatabaseConnection
+
+            // Check if the game exists
+            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id=?")) {
+                selectStmt.setLong(1, id);
+                ResultSet rs = selectStmt.executeQuery();
+                if (!rs.next()) {
+                    return Optional.empty();
+                }
+            }
+
+            // Update the existing game
+            try (PreparedStatement updateStmt =
+                         conn.prepareStatement("UPDATE game SET greyId=?, blackId=?, scoreGrey=?,scoreBlack=? WHERE " +
+                                 "id=?")) {
+                updateStmt.setLong(1, game.getGreyId());
+                updateStmt.setLong(2, game.getBlackId());
+                updateStmt.setInt(3, game.getScoreGrey());
+                updateStmt.setInt(4, game.getScoreBlack());
+                updateStmt.setLong(5, id);
+                updateStmt.executeUpdate();
+            }
+
+            // Retrieve updated game from the database
+            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id=?")) {
+                selectStmt.setLong(1, id);
+                ResultSet rs = selectStmt.executeQuery();
+
+                if (rs.next()) {
+                    Game updatedGame = new Game();
+                    updatedGame.setId(rs.getLong("id"));
+                    updatedGame.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
+                    updatedGame.setGreyId(rs.getLong("greyId"));
+                    updatedGame.setBlackId(rs.getLong("blackId"));
+                    updatedGame.setScoreGrey(rs.getInt("scoreGrey"));
+                    updatedGame.setScoreBlack(rs.getInt("scoreBlack"));
+                    return Optional.of(updatedGame);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+        }
         return Optional.empty();
     }
+    /* COMMENTING OUT FOR NOW
 
     @Override
     public boolean deleteGame(Long id) {

@@ -10,6 +10,6 @@ public interface GameRepository {
     Game addGame(Game game);
     Optional<Game> getGame(Long id);
     List<Game> getAllGames();
-    // Optional<Game> updateGame(Long id, Game game);
+    Optional<Game> updateGame(Long id, Game game);
     // boolean deleteGame(Long id);
 }

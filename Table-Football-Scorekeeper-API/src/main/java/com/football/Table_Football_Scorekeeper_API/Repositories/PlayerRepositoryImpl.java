@@ -17,14 +17,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     private final DatabaseConnection db;
 
-    static {
+    /*static {  // TODO: Not necessary, gets loaded automatically
         try {
             // Load JDBC class for MySQL driver. (not always required since JDBC 4.0+ automatically loads drivers)
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("MySQL Driver not found", e);
         }
-    }
+    }*/
 
     public PlayerRepositoryImpl() {
         // fetch a single instance of the DatabaseConnection class (Singleton Pattern)

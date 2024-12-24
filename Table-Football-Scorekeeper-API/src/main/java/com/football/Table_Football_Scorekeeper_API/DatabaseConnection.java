@@ -1,5 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API;
 
+import com.mysql.cj.jdbc.Driver;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,9 +29,13 @@ public class DatabaseConnection {
         String database = props.getProperty("database");
         String user = props.getProperty("user");
         String password = props.getProperty("password");
+        String driver = props.getProperty("driver");
 
         // The "address" to the MySQL database. Server, port and database replaced with %s, supply them as arguments
         String url = String.format("jdbc:mysql://%s:%s/%s?serverTimezone=UTC", server, port, database);
+
+        // Load driver
+        DriverManager.registerDriver(new Driver());
 
         // provided URL, username, and password.
         conn = DriverManager.getConnection(url, user, password);
