@@ -62,7 +62,6 @@ public class GameRepositoryImpl implements GameRepository {
                     return retrievedGame;
                 }
             }
-            insertStmt.close();
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
