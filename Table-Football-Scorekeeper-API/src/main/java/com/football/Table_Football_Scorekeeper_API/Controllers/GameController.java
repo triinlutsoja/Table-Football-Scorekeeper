@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/games")
+@CrossOrigin(origins = "http://localhost:5500")  // for frontend
 public class GameController {
 
     private final GameService gameService;

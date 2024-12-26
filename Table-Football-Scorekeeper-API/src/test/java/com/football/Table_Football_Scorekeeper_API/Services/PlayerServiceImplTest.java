@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.InMemoryPlayerRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerServiceImplTest {
 
-    /* COMMENTING EVERYTHING OUT
     private PlayerServiceImpl playerService;
     private InMemoryPlayerRepository playerRepository;
 
@@ -34,56 +34,74 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void addPlayer_ShouldAddNewPlayer() {  // Verifies that a new player is correctly added to the repository and service.
+    void addPlayer_ShouldAddNewPlayer() {
         // Arrange
         Player newPlayer = new Player("Test Name");
 
         // Act
-        Optional<Player> addedPlayer = playerService.addPlayer(newPlayer);
+        Player addedPlayer = playerService.addPlayer(newPlayer);
 
         // Assert
-        assertEquals(newPlayer.getId(), addedPlayer.get().getId());
-        assertEquals(newPlayer.getName(), addedPlayer.get().getName());
+        assertEquals(3, addedPlayer.getId());
+        assertEquals("Test Name", addedPlayer.getName());
         assertEquals(3, playerRepository.getAllPlayers().size());
     }
 
+
     @Test
-    void addPlayer_ShouldReturnEmptyOptional_WhenNameIsNull() {
+    void addPlayer_ShouldReturnValidationException_WhenNameIsNull() {
         // Arrange
         Player newPlayer = new Player(null);
 
         // Act
-        Optional<Player> addedPlayer = playerService.addPlayer(newPlayer);
+        ValidationException thrown = null;
+        try {
+            playerService.addPlayer(newPlayer);
+        } catch (ValidationException e) {
+            thrown = e;
+        }
 
         // Assert
-        assertTrue(addedPlayer.isEmpty(), "Adding a player with a null value for name should return an empty " +
-                "Optional");
+        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
+        // display message
+        assertEquals("Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
     }
 
-    @Test
-    void addPlayer_ShouldThrowException_WhenNameAlreadyExists() {
-        // Arrange
-        Player duplicatePlayer = new Player("John Doe");  // "John Doe" already exists in the setup
-
-        // Act & Assert
-        Optional<Player> addedPlayer = playerService.addPlayer(duplicatePlayer);
-
-        // Validate the exception message
-        assertTrue(addedPlayer.isEmpty(), "Adding a duplicate player should return an empty Optional");
-    }
 
     @Test
-    void getPlayer_ShouldReturnPlayer_WhenPlayerExists() {  // Ensures the correct player is returned if they exist in the repository.
+    void addPlayer_ShouldReturnValidationException_WhenNameIsEmpty() {
         // Arrange
-        Long playerId = 1L;
+        Player newPlayer = new Player("");  // name is empty
 
         // Act
-        Optional<Player> foundPlayer = playerService.getPlayer(playerId);
+        ValidationException thrown = null;
+        try {
+            playerService.addPlayer(newPlayer);
+        } catch (ValidationException e) {
+            thrown = e;
+        }
 
         // Assert
-        assertTrue(foundPlayer.isPresent());
-        assertEquals("John Doe", foundPlayer.get().getName());
+        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
+        // display message
+        assertEquals("Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
     }
+
+    @Test
+    void getPlayer_ShouldReturnPlayerById_WhenPlayerExists() {  // Ensures the correct player is returned if they exist
+        // in the repository.
+
+        // Arrange
+        Long playerId = 1L;  // This belongs to the player named John Doe
+
+        // Act
+        Optional<Player> retrievedPlayer = playerService.getPlayer(playerId);
+
+        // Assert
+        assertTrue(retrievedPlayer.isPresent());
+        assertEquals("John Doe", retrievedPlayer.get().getName());
+    }
+    /* COMMENTING OUT
 
     @Test
     void getPlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {  // Tests that an empty Optional is returned when the requested player ID does not exist.

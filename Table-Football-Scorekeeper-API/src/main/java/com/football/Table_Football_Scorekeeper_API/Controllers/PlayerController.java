@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/players")
+@CrossOrigin(origins = "http://localhost:5500")  // for frontend
 public class PlayerController {
 
     private final PlayerService playerService;
