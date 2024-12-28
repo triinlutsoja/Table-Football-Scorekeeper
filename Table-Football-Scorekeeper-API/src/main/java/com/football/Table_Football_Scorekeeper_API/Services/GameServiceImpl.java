@@ -27,10 +27,10 @@ public class GameServiceImpl implements GameService {
         if (game.getGreyId() == game.getBlackId()) {
             throw new ValidationException("Players can't play against themselves.");
         }
-        if (game.getScoreGrey() < 0 && game.getScoreGrey() > 8) {
+        if (game.getScoreGrey() < 0 || game.getScoreGrey() > 8) {
             throw new ValidationException("Score of the grey player cannot be less than zero or more than 8.");
         }
-        if (game.getScoreBlack() < 0 && game.getScoreBlack() > 8) {
+        if (game.getScoreBlack() < 0 || game.getScoreBlack() > 8) {
             throw new ValidationException("Score of the black player cannot be less than zero or more than 8.");
         }
         boolean greyWins = (game.getScoreGrey() == 8 && game.getScoreBlack() < 8);

@@ -88,8 +88,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void getPlayer_ShouldReturnPlayerById_WhenPlayerExists() {  // Ensures the correct player is returned if they exist
-        // in the repository.
+    void getPlayer_ShouldReturnPlayerById_WhenPlayerExists() {
 
         // Arrange
         Long playerId = 1L;  // This belongs to the player named John Doe
@@ -101,10 +100,9 @@ class PlayerServiceImplTest {
         assertTrue(retrievedPlayer.isPresent());
         assertEquals("John Doe", retrievedPlayer.get().getName());
     }
-    /* COMMENTING OUT
 
     @Test
-    void getPlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {  // Tests that an empty Optional is returned when the requested player ID does not exist.
+    void getPlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {
         // Arrange
         Long playerId = 99L;
 
@@ -116,7 +114,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void getAllPlayers_ShouldReturnAllPlayers() {  // Confirms that all players in the repository are returned.
+    void getAllPlayers_ShouldReturnAllPlayers() {
         // Act
         List<Player> allPlayers = playerService.getAllPlayers();
 
@@ -125,7 +123,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void updatePlayer_ShouldUpdatePlayer_WhenPlayerExists() { // Verifies that an existing player’s details are updated correctly.
+    void updatePlayer_ShouldUpdatePlayer_WhenPlayerExists() {
         // Arrange
         Player updatedPlayer = new Player("Updated John Doe");
         Long playerId = 1L;  // a player with this ID exists
@@ -139,7 +137,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void updatePlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {  // Tests that an empty Optional is returned when trying to update a nonexistent player.
+    void updatePlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {
         // Arrange
         Player updatedPlayer = new Player("Updated John Doe");
         Long playerId = 99L;  // a player with this ID does not exist
@@ -149,20 +147,6 @@ class PlayerServiceImplTest {
 
         // Assert
         assertTrue(nonExistingPlayerToBeUpdated.isEmpty());
-    }
-
-    void updatePlayer_ShouldReturnEmptyOptional_WhenNameAlreadyExists() {  // Tests that an empty Optional is returned
-        // when trying to update an existing player with a duplicate name.
-
-        // Arrange
-        Player updatedPlayer = new Player("Jame Smith");  // a "Jane Smith" already exists in setUp()
-        Long playerId = 1L;  // a player with this ID exists
-
-        // Act
-        Optional<Player> result = playerService.updatePlayer(playerId, updatedPlayer);
-
-        // Assert
-        assertTrue(result.isEmpty(), "Updating a player to a name that already exists should return an empty Optional");
     }
 
     @Test
@@ -178,8 +162,9 @@ class PlayerServiceImplTest {
         assertEquals(1, playerRepository.getAllPlayers().size());
     }
 
+
     @Test
-    void deletePlayer_ShouldNotThrowError_WhenPlayerDoesNotExist() {  // Confirms that deleting a nonexistent player does not throw an error.
+    void deletePlayer_ShouldReturnFalse_WhenPlayerDoesNotExist() {
         // Arrange
         Long playerId = 99L;  // a player with this ID does not exist
 
@@ -192,12 +177,12 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void getPlayersByName_ShouldReturnPlayers_WhenNameMatches() {  // Checks that the correct players are returned based on the name search.
+    void getPlayersByName_ShouldReturnPlayers_WhenNameMatches() {
         // Arrange
         String name = "John Doe";
 
         // Act
-        List<Player> playersNamedJohnDoe = playerService.getPlayersByName(name);
+        List<Player> playersNamedJohnDoe = playerService.findByNameIgnoreCase(name);
 
         // Assert
         assertEquals(1, playersNamedJohnDoe.size());
@@ -205,15 +190,15 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void getPlayersByName_ShouldReturnEmptyList_WhenNoMatchFound() {  // Verifies that an empty list is returned when no players match the given name.
+    void getPlayersByName_ShouldReturnEmptyList_WhenNoMatchFound() {
         // Arrange
         String name = "Nonexistent Name";
 
         // Act
-        List<Player> noPlayersWithThatName = playerService.getPlayersByName(name);
+        List<Player> noPlayersWithThatName = playerService.findByNameIgnoreCase(name);
 
         // Assert
         assertTrue(noPlayersWithThatName.isEmpty());
 
-    }*/
+    }
 }
