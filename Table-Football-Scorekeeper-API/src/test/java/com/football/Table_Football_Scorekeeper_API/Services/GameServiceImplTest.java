@@ -341,10 +341,67 @@ class GameServiceImplTest {
     }
 
     @Test
-    void updateGame() {
+    void updateGame_ShouldUpdateGame_WhenGameExists() {
+        // Arrange
+        Game existingGame = new Game(LocalDateTime.now(),2L, 1L, 8, 4);
+        existingGame.setId(1L);  // mock repository's behaviour of automatically adding an ID
+        Game updatedGame = new Game(LocalDateTime.now(),2L, 1L, 4, 8);
+        updatedGame.setId(1L);
+
+        when(gameRepository.updateGame(1L, updatedGame)).thenReturn(Optional.of(updatedGame));  // Mock repository
+        // updateGame behavior
+
+        // Act
+        Optional<Game> retrievedGame = gameService.updateGame(1L, updatedGame);
+
+        // Assert
+        assertTrue(retrievedGame.isPresent());
+        assertEquals(updatedGame.getId(), retrievedGame.get().getId());
+        assertEquals(updatedGame.getScoreGrey(), retrievedGame.get().getScoreGrey());
+        assertEquals(updatedGame.getScoreBlack(), retrievedGame.get().getScoreBlack());
     }
 
     @Test
-    void deleteGame() {
+    void updateGame_ShouldReturnEmptyOptional_WhenGameDoesNotExist() {
+        // Arrange
+        Game updatedGame = new Game(LocalDateTime.now(),2L, 1L, 4, 8);
+        updatedGame.setId(99L);
+
+        when(gameRepository.updateGame(99L, updatedGame)).thenReturn(Optional.empty());  // Mock repository updateGame
+        // behavior
+
+        // Act
+        Optional<Game> retrievedGame = gameService.updateGame(99L, updatedGame);
+
+        // Assert
+        assertTrue(retrievedGame.isEmpty());
+    }
+
+    @Test
+    void deleteGame_ShouldDeleteGame_WhenGameExists() {
+        // Arrange
+        Long gameId = 1L;  // a game with this ID exists
+
+        when(gameRepository.deleteGame(1L)).thenReturn(true);  // Mock repository deleteGame behavior
+
+        // Act
+        boolean isDeleted = gameService.deleteGame(1L);
+
+        // Assert
+        assertTrue(isDeleted);
+    }
+
+    @Test
+    void deleteGame_ShouldReturnFalse_WhenGameDoesNotExist() {
+        // Arrange
+        Long gameId = 99L;  // a game with this ID does not exist
+
+        when(gameRepository.deleteGame(99L)).thenReturn(false);  // Mock repository deleteGame behavior
+
+        // Act
+        boolean isDeleted = gameService.deleteGame(99L);
+
+        // Assert
+        assertFalse(isDeleted);
     }
 }

@@ -155,10 +155,10 @@ class PlayerServiceImplTest {
         Long playerId = 1L;  // a player with this ID exists
 
         // Act
-        boolean playerToBeDeleted = playerService.deletePlayer(playerId);
+        boolean isDeleted = playerService.deletePlayer(playerId);
 
         // Assert
-        assertTrue(playerToBeDeleted);
+        assertTrue(isDeleted);
         assertEquals(1, playerRepository.getAllPlayers().size());
     }
 
@@ -169,10 +169,10 @@ class PlayerServiceImplTest {
         Long playerId = 99L;  // a player with this ID does not exist
 
         // Act
-        boolean playerToBeDeleted = playerService.deletePlayer(playerId);
+        boolean isDeleted = playerService.deletePlayer(playerId);
 
         // Assert
-        assertFalse(playerToBeDeleted);
+        assertFalse(isDeleted);
         assertEquals(2, playerRepository.getAllPlayers().size());
     }
 
