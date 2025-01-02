@@ -10,12 +10,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/players")
-@CrossOrigin(origins = "http://localhost:5500")  // for frontend
+// @CrossOrigin(origins = "http://localhost:5500")  // for frontend
 public class PlayerController {
 
     private final PlayerService playerService;
-
-    // DI through constructor
     public PlayerController(PlayerService playerService) {
         this.playerService = playerService;
     }

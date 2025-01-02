@@ -3,6 +3,38 @@ let blackScore = 0;
 let startTime;
 let timerInterval;
 
+// Handle form submission for adding a player
+document.getElementById("add-player-form").addEventListener("submit", async (e) => {
+  e.preventDefault(); // Prevent the form from refreshing the page
+  const playerName = document.getElementById("new-player-name").value.trim();
+
+  if (!playerName) {
+    alert("Please enter a player name.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:8080/players", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: playerName }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to add player: ${response.status}`);
+    }
+
+    const newPlayer = await response.json();
+    alert(`Player added successfully: ${newPlayer.name}`);
+    document.getElementById("new-player-name").value = ""; // Clear the input field
+
+    // Refresh player list
+    fetchPlayers();
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
 // Fetch players from the backend
 async function fetchPlayers() {
   try {
@@ -13,6 +45,7 @@ async function fetchPlayers() {
     const players = await response.json(); // Assuming the backend returns JSON
     populatePlayerDropdown("grey-player-select", players);
     populatePlayerDropdown("black-player-select", players);
+    console.log(players); // Debugging: Log players to ensure data is correct
   } catch (error) {
     console.error(error.message);
   }
@@ -102,6 +135,14 @@ const endGame = () => {
   if (!validatePlayers()) {
     return; // Don't proceed if validation fails
   }
+
+  // Log the request body before sending it to the back end
+  console.log({
+    greyId: grey,
+    blackId: black,
+    scoreGrey: greyScore,
+    scoreBlack: blackScore,
+  });
 
   fetch("http://localhost:8080/games", { // Correct endpoint for saving game
     method: "POST",
