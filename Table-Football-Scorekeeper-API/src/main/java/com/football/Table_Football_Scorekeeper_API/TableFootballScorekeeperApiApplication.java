@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.TimeZone;
 
 @SpringBootApplication
-// @CrossOrigin(origins = "http://localhost:5500") // Global CORS setup
+@CrossOrigin(origins = "http://localhost:5500") // Global CORS setup
 public class TableFootballScorekeeperApiApplication {
 
 	public static void main(String[] args) {

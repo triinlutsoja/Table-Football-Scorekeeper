@@ -37,17 +37,22 @@ document.getElementById("add-player-form").addEventListener("submit", async (e) 
 
 // Fetch players from the backend
 async function fetchPlayers() {
+  console.log("Fetching players...");
   try {
-    const response = await fetch("http://localhost:8080/players"); // Correct backend endpoint
+    const response = await fetch("http://localhost:8080/players");
+    console.log("Response status:", response.status);
+    console.log("Response headers:", [...response.headers.entries()]); // Log all headers
+
     if (!response.ok) {
       throw new Error(`Error fetching players: ${response.status}`);
     }
+
     const players = await response.json(); // Assuming the backend returns JSON
+    console.log("Players fetched successfully:", players); // Debugging: Log players data
     populatePlayerDropdown("grey-player-select", players);
     populatePlayerDropdown("black-player-select", players);
-    console.log(players); // Debugging: Log players to ensure data is correct
   } catch (error) {
-    console.error(error.message);
+    console.error("Error fetching players:", error.message);
   }
 }
 
@@ -131,37 +136,34 @@ const endGame = () => {
     return;
   }
 
-  // Call validation function
   if (!validatePlayers()) {
     return; // Don't proceed if validation fails
   }
 
-  // Log the request body before sending it to the back end
-  console.log({
+  const requestBody = {
     greyId: grey,
     blackId: black,
     scoreGrey: greyScore,
     scoreBlack: blackScore,
-  });
+  };
 
-  fetch("http://localhost:8080/games", { // Correct endpoint for saving game
+  console.log("Sending game data to the backend:", requestBody); // Debug request body
+
+  fetch("http://localhost:8080/games", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      greyId: grey,
-      blackId: black,
-      scoreGrey: greyScore,
-      scoreBlack: blackScore,
-    }),
+    body: JSON.stringify(requestBody),
   })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`Error saving game: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then((data) => console.log("Game saved:", data))
-    .catch((err) => console.error("Error saving game:", err));
+      .then((res) => {
+        console.log("Response status:", res.status); // Log response status
+        console.log("Response headers:", [...res.headers.entries()]); // Log all headers
+        if (!res.ok) {
+          throw new Error(`Error saving game: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => console.log("Game saved successfully:", data)) // Log success response
+      .catch((err) => console.error("Error saving game:", err)); // Log error
 };
 
 // Initialize when page loads
