@@ -1,3 +1,27 @@
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("JavaScript Loaded");
+  fetch("http://localhost:8080/stats")
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);  // Log the data to check the response
+        const statsBody = document.getElementById('stats-body');
+        statsBody.innerHTML = '';  // Clear existing rows
+
+        data.forEach(player => {
+          const row = document.createElement('tr');
+          const playerNameCell = document.createElement('td');
+          playerNameCell.textContent = player.playerName;
+          row.appendChild(playerNameCell);
+
+          const victoriesCell = document.createElement('td');
+          victoriesCell.textContent = player.victories;
+          row.appendChild(victoriesCell);
+
+          statsBody.appendChild(row);
+        });
+      });
+});
+
 let greyScore = 0;
 let blackScore = 0;
 let startTime;
@@ -169,4 +193,37 @@ const endGame = () => {
 // Initialize when page loads
 document.addEventListener("DOMContentLoaded", () => {
   fetchPlayers();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Fetch the data from the backend API
+  fetch('http://localhost:8080/stats')
+      .then(response => response.json())  // Parse the response as JSON
+      .then(data => {
+        // After the data is received, update the DOM
+        const statsBody = document.getElementById('stats-body');
+        statsBody.innerHTML = '';  // Clear existing table rows
+
+        // Loop through each player and display their victories
+        data.forEach(player => {
+          // Create a new table row for each player
+          const row = document.createElement('tr');
+
+          // Create and append the player name cell
+          const playerNameCell = document.createElement('td');
+          playerNameCell.textContent = player.playerName;
+          row.appendChild(playerNameCell);
+
+          // Create and append the victories cell
+          const victoriesCell = document.createElement('td');
+          victoriesCell.textContent = player.victories;
+          row.appendChild(victoriesCell);
+
+          // Append the row to the table body
+          statsBody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching stats:', error);
+      });
 });

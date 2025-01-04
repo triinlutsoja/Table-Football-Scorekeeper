@@ -2,9 +2,8 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
-import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Entities.PlayerStat;
 import com.football.Table_Football_Scorekeeper_API.Profile;
-import com.football.Table_Football_Scorekeeper_API.TableFootballScorekeeperApiApplication;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -200,5 +199,40 @@ public class GameRepositoryImpl implements GameRepository {
             System.err.println("Error deleting player with " + id + ": " + e.getMessage());
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
+    }
+
+    public List<PlayerStat> calculateWinStats() {
+        List<PlayerStat> winnerStats = new ArrayList<>();
+
+        // Get connection, execute query, get all game stats from the database. Try-with-resources closes stuff
+        // automatically
+        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
+             PreparedStatement selectStmt =
+                     conn.prepareStatement("SELECT player.name AS playerName, COUNT(*) AS victories\n" +
+                             "FROM player\n" +
+                             "JOIN (\n" +
+                             "    SELECT \n" +
+                             "        CASE \n" +
+                             "            WHEN scoreGrey > scoreBlack THEN greyId\n" +
+                             "            WHEN scoreBlack > scoreGrey THEN blackId\n" +
+                             "            ELSE NULL\n" +
+                             "        END AS winnerId\n" +
+                             "    FROM game\n" +
+                             ") winners ON player.id = winners.winnerId\n" +
+                             "GROUP BY player.name;")) {
+
+            ResultSet rs = selectStmt.executeQuery();  // ResultSet contains both playerName and victories columns
+
+            while (rs.next()) {
+                // Create a PlayerStat object from the result set
+                PlayerStat retrievedPlayerStat = new PlayerStat();
+                retrievedPlayerStat.setPlayerName(rs.getString("playerName"));
+                retrievedPlayerStat.setVictoryCount(rs.getInt("victories"));
+                winnerStats.add(retrievedPlayerStat);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+        }
+        return winnerStats; // Return the List of game stats (even if it's empty)
     }
 }
