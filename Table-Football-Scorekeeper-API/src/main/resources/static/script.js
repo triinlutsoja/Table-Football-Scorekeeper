@@ -212,4 +212,11 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => {
         console.error('Error fetching stats:', error);
       });
+
+  // Add event listener to start the game
+  document.getElementById("start-game-button").addEventListener("click", () => {
+    if (validatePlayers()) {
+      startGameTimer();  // Start the timer when the "Start Game" button is clicked
+    }
+  });
 });
