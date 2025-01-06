@@ -1,27 +1,3 @@
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("JavaScript Loaded");
-  fetch("http://localhost:8080/stats")
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);  // Log the data to check the response
-        const statsBody = document.getElementById('stats-body');
-        statsBody.innerHTML = '';  // Clear existing rows
-
-        data.forEach(player => {
-          const row = document.createElement('tr');
-          const playerNameCell = document.createElement('td');
-          playerNameCell.textContent = player.playerName;
-          row.appendChild(playerNameCell);
-
-          const victoriesCell = document.createElement('td');
-          victoriesCell.textContent = player.victories;
-          row.appendChild(victoriesCell);
-
-          statsBody.appendChild(row);
-        });
-      });
-});
-
 let greyScore = 0;
 let blackScore = 0;
 let startTime;
@@ -40,8 +16,8 @@ document.getElementById("add-player-form").addEventListener("submit", async (e) 
   try {
     const response = await fetch("http://localhost:8080/players", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: playerName }),
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name: playerName}),
     });
 
     if (!response.ok) {
@@ -175,7 +151,7 @@ const endGame = () => {
 
   fetch("http://localhost:8080/games", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {"Content-Type": "application/json"},
     body: JSON.stringify(requestBody),
   })
       .then((res) => {
@@ -195,28 +171,38 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchPlayers();
 });
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+  console.log("JavaScript is running!");
+
   // Fetch the data from the backend API
   fetch('http://localhost:8080/stats')
-      .then(response => response.json())  // Parse the response as JSON
+      .then(response => {
+        console.log("Fetching stats...");
+        return response.json();
+      })
       .then(data => {
-        // After the data is received, update the DOM
+        console.log(data); // Log the data received
+
+        // Clear existing table rows
         const statsBody = document.getElementById('stats-body');
-        statsBody.innerHTML = '';  // Clear existing table rows
+        statsBody.innerHTML = '';
 
         // Loop through each player and display their victories
         data.forEach(player => {
-          // Create a new table row for each player
-          const row = document.createElement('tr');
+          console.log("Adding player to table:", player); // Log each player object
+
+          const row = document.createElement('tr'); // Create a new table row
 
           // Create and append the player name cell
           const playerNameCell = document.createElement('td');
           playerNameCell.textContent = player.playerName;
+          console.log("Player name cell:", player.playerName); // Log the player name
           row.appendChild(playerNameCell);
 
           // Create and append the victories cell
           const victoriesCell = document.createElement('td');
-          victoriesCell.textContent = player.victories;
+          victoriesCell.textContent = `${player.victoryCount}`; // Force victories to render as a string
+          console.log("Victories cell:", player.victoryCount); // Log the victories count
           row.appendChild(victoriesCell);
 
           // Append the row to the table body

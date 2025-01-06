@@ -55,29 +55,6 @@
       </tbody>
     </table>
   </div>
+  <script src="script.js" defer></script>
 </body>
-<script src="script.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch("http://localhost:8080/stats")
-            .then(response => response.json())
-            .then(data => {
-              const statsBody = document.getElementById('stats-body');
-              statsBody.innerHTML = '';  // Clear existing table rows
-
-              data.forEach(player => {
-                const row = document.createElement('tr');
-                const playerNameCell = document.createElement('td');
-                playerNameCell.textContent = player.playerName;
-                row.appendChild(playerNameCell);
-
-                const victoriesCell = document.createElement('td');
-                victoriesCell.textContent = player.victories;
-                row.appendChild(victoriesCell);
-
-                statsBody.appendChild(row);
-              });
-            });
-  });
-</script>
 </html>
