@@ -321,7 +321,7 @@ class GameServiceImplTest {
     }
 
     @Test
-    void getAllGames() {
+    void getAllGames_ShouldReturnAllGames() {
         // Arrange
         List<Game> games = new ArrayList<>();
         Game existingGame1 = new Game(LocalDateTime.now(),2L, 1L, 8, 4);
