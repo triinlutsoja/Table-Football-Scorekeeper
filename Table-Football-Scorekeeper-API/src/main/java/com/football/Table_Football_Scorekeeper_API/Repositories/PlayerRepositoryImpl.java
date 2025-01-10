@@ -99,39 +99,24 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
         try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
 
-            // Check if the player exists
-            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
-                selectStmt.setLong(1, id);
-                ResultSet rs = selectStmt.executeQuery();
-                if (!rs.next()) {
-                    return Optional.empty(); // If no such player exists, return empty
-                }
-            }
-
-            // Update the existing player
+            // Attempt to update the player
             try (PreparedStatement updateStmt = conn.prepareStatement("UPDATE player SET name = ? WHERE id = ?")) {
                 updateStmt.setString(1, player.getName());
                 updateStmt.setLong(2, id);
-                updateStmt.executeUpdate();
-            }
+                int rowsAffected = updateStmt.executeUpdate();
 
-            // Retrieve updated player from the database
-            // TODO: duplicating! No SELECT please.
-            try (PreparedStatement retrieveStmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
-                retrieveStmt.setLong(1, id); // Set the ID parameter in the query
-                ResultSet rs = retrieveStmt.executeQuery(); // Execute the query
-
-                if (rs.next()) {
-                    Player updatedPlayer = new Player();
-                    updatedPlayer.setId(rs.getLong("id")); // Map the "id" column to id
-                    updatedPlayer.setName(rs.getString("name")); // Map the "name" column to name
-                    return Optional.of(updatedPlayer); // Return the Player wrapped in an Optional
+                // If no rows were affected, the player does not exist
+                if (rowsAffected == 0) {
+                    return Optional.empty();
                 }
+
+                // Return the updated player
+                player.setId(id);
+                return Optional.of(player);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return Optional.empty(); // Return empty if not possible to return
     }
 
     @Override
