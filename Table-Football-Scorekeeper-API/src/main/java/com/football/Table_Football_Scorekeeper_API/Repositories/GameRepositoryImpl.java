@@ -6,10 +6,7 @@ import com.football.Table_Football_Scorekeeper_API.Entities.PlayerStat;
 import com.football.Table_Football_Scorekeeper_API.Profile;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -117,47 +114,32 @@ public class GameRepositoryImpl implements GameRepository {
         // Get connection, execute query, update. Try-with-resources closes stuff automatically
         try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
 
-            // Check if the game exists
-            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id=?")) {
-                selectStmt.setLong(1, id);
-                ResultSet rs = selectStmt.executeQuery();
-                if (!rs.next()) {
-                    return Optional.empty();
-                }
-            }
-
-            // Update the existing game
+            // Attempt to update the game
             try (PreparedStatement updateStmt =
-                         conn.prepareStatement("UPDATE game SET greyId=?, blackId=?, scoreGrey=?,scoreBlack=? WHERE " +
+                         conn.prepareStatement("UPDATE game SET greyId=?, blackId=?, scoreGrey=?,scoreBlack=?," +
+                                 "timestamp=?" +
+                                 " WHERE " +
                                  "id=?")) {
                 updateStmt.setLong(1, game.getGreyId());
                 updateStmt.setLong(2, game.getBlackId());
                 updateStmt.setInt(3, game.getScoreGrey());
                 updateStmt.setInt(4, game.getScoreBlack());
-                updateStmt.setLong(5, id);
-                updateStmt.executeUpdate();
-            }
+                updateStmt.setTimestamp(5, Timestamp.valueOf(game.getTimestamp()));
+                updateStmt.setLong(6, id);
+                int rowsAffected = updateStmt.executeUpdate();
 
-            // Retrieve updated game from the database
-            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id=?")) {
-                selectStmt.setLong(1, id);
-                ResultSet rs = selectStmt.executeQuery();
-
-                if (rs.next()) {
-                    Game updatedGame = new Game();
-                    updatedGame.setId(rs.getLong("id"));
-                    updatedGame.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
-                    updatedGame.setGreyId(rs.getLong("greyId"));
-                    updatedGame.setBlackId(rs.getLong("blackId"));
-                    updatedGame.setScoreGrey(rs.getInt("scoreGrey"));
-                    updatedGame.setScoreBlack(rs.getInt("scoreBlack"));
-                    return Optional.of(updatedGame);
+                // If no rows were affected, the game does not exist
+                if (rowsAffected == 0) {
+                    return Optional.empty();
                 }
+
+                // Return the updated game
+                game.setId(id);
+                return Optional.of(game);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return Optional.empty();
     }
 
 
