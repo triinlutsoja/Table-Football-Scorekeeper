@@ -45,26 +45,13 @@ public class GameRepositoryImpl implements GameRepository {
             ResultSet generatedKeys = insertStmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 Long generatedId = generatedKeys.getLong(1);
-
-                // Query the database to fetch the just added game and return it
-                PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id = ?");
-                selectStmt.setLong(1, generatedId);
-                ResultSet rs = selectStmt.executeQuery();
-                if (rs.next()) {
-                    Game retrievedGame = new Game();
-                    retrievedGame.setId(rs.getLong("id"));
-                    retrievedGame.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
-                    retrievedGame.setGreyId(rs.getLong("greyId"));
-                    retrievedGame.setBlackId(rs.getLong("blackId"));
-                    retrievedGame.setScoreGrey(rs.getInt("scoreGrey"));
-                    retrievedGame.setScoreBlack(rs.getInt("scoreBlack"));
-                    return retrievedGame;
-                }
+                game.setId(generatedId);
+                return game;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        // If adding a new game fails, throw an exception
+        // Explicitly throw an exception on rare edge cases
         throw new RuntimeException("Failed to add game to the database.");
     }
 
