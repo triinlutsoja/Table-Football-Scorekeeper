@@ -30,7 +30,7 @@ public class PlayerController {
         if (existingPlayer.isPresent()) {
             return ResponseEntity.status(200).body(existingPlayer.get());
         }
-        return ResponseEntity.status(404).build();
+        return ResponseEntity.status(404).build();  // TODO: 404=Page not found. Check the status code!
     }
 
     @GetMapping
@@ -45,7 +45,7 @@ public class PlayerController {
         if (updatedPlayer.isPresent()) {
             return ResponseEntity.status(200).body(updatedPlayer.get());
         }
-        return ResponseEntity.status(404).build();
+        return ResponseEntity.status(404).build();  // TODO: 404=Page not found. Check the status code!
     }
 
     @DeleteMapping("/{id}")
@@ -53,7 +53,7 @@ public class PlayerController {
         if (playerService.deletePlayer(id)) {
             return ResponseEntity.noContent().build();  // 204 No Content when deletion is successful
         }
-        return ResponseEntity.status(404).build();
+        return ResponseEntity.status(404).build();  // TODO: 404=Page not found. Check the status code!
     }
 
     @GetMapping("/by-name")

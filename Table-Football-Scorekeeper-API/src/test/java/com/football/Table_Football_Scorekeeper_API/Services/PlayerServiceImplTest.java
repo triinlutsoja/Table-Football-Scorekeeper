@@ -34,7 +34,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void addPlayer_ShouldAddNewPlayer() {
+    void addPlayer_ShouldAddNewPlayer() {  // TODO: camelCase? snake_case etc? Don't MIX! Stick to one.
         // Arrange
         Player newPlayer = new Player("Test Name");
 
@@ -54,6 +54,7 @@ class PlayerServiceImplTest {
         Player newPlayer = new Player(null);
 
         // Act
+        // TODO: Remove try-catch, because I can use assertThrows or similar
         ValidationException thrown = null;
         try {
             playerService.addPlayer(newPlayer);
@@ -138,6 +139,8 @@ class PlayerServiceImplTest {
 
     @Test
     void updatePlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {
+        // TODO: This test becomes redundant because this scenario is already tested with getPlayer.
+
         // Arrange
         Player updatedPlayer = new Player("Updated John Doe");
         Long playerId = 99L;  // a player with this ID does not exist
@@ -152,6 +155,8 @@ class PlayerServiceImplTest {
     @Test
     void deletePlayer_ShouldRemovePlayer_WhenPlayerExists() {  // Ensures a player is removed from the repository when they exist.
         // Arrange
+        // TODO: It's better to first add a player, then delete it and make sure that this specific player doesn't
+        //  exist anymore.
         Long playerId = 1L;  // a player with this ID exists
 
         // Act
@@ -160,11 +165,14 @@ class PlayerServiceImplTest {
         // Assert
         assertTrue(isDeleted);
         assertEquals(1, playerRepository.getAllPlayers().size());
+        // TODO: Make sure that John is deleted, and not Peter. Now you can't be sure, who got deleted.
     }
 
 
     @Test
     void deletePlayer_ShouldReturnFalse_WhenPlayerDoesNotExist() {
+        // TODO: This test becomes redundant because this scenario is already tested with getPlayer.
+        
         // Arrange
         Long playerId = 99L;  // a player with this ID does not exist
 

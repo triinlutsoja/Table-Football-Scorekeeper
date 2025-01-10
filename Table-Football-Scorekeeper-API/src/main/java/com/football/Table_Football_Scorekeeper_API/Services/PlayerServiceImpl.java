@@ -18,14 +18,6 @@ public class PlayerServiceImpl implements PlayerService {
         this.playerRepository = playerRepository;
     }
 
-    private boolean validatePlayer(Player player) {
-        // Validate that the player's name is not null or empty
-        if (player.getName() == null || player.getName().isEmpty()) {
-            throw new ValidationException("Player name cannot be null or empty.");
-        }
-        return true;
-    }
-
     @Override
     public Player addPlayer(Player player) {
         // Validate player
@@ -64,6 +56,8 @@ public class PlayerServiceImpl implements PlayerService {
         // Validate player
         validatePlayer(player);
 
+        // TODO: Validate that player exists on the SERVICE LAYER, not it repo.
+
         try {
             return playerRepository.updatePlayer(id, player);
         } catch (RuntimeException e) {
@@ -90,5 +84,13 @@ public class PlayerServiceImpl implements PlayerService {
             System.err.println("Failed to retrieve all players with the name " + name + "." + e.getMessage());
             throw new RuntimeException("PlayerService failed to retrieve all players with a specific name.", e);
         }
+    }
+
+    private boolean validatePlayer(Player player) {
+        // Validate that the player's name is not null or empty
+        if (player.getName() == null || player.getName().isEmpty()) {
+            throw new ValidationException("Player name cannot be null or empty.");
+        }
+        return true;
     }
 }

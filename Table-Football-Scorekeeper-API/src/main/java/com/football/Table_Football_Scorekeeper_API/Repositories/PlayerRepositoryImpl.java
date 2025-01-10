@@ -38,24 +38,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             if (generatedKeys.next()) {
                 Long generatedId = generatedKeys.getLong(1);  // The first column is the generated key
 
-                // Query the database to fetch the just added player and return it
-                PreparedStatement selectStmt = conn.prepareStatement("SELECT id, name FROM player WHERE id = ?");
-                selectStmt.setLong(1, generatedId);
-                ResultSet rs = selectStmt.executeQuery();
-                if (rs.next()) {
-                    Player retrievedPlayer = new Player();
-                    Long retrievedId = rs.getLong("id");
-                    String retrievedName = rs.getString("name");
-                    retrievedPlayer.setId(retrievedId);
-                    retrievedPlayer.setName(retrievedName);
-                    return retrievedPlayer;
-                }
-                selectStmt.close();
+                // Set the generated ID on the player object
+                player.setId(generatedId);
+                return player;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        // If adding a new player fails, throw an exception
+        // Explicitly throw an exception on rare edge cases
         throw new RuntimeException("Failed to add player to the database.");
     }
 
@@ -126,6 +116,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             }
 
             // Retrieve updated player from the database
+            // TODO: duplicating! No SELECT please.
             try (PreparedStatement retrieveStmt = conn.prepareStatement("SELECT * FROM player WHERE id = ?")) {
                 retrieveStmt.setLong(1, id); // Set the ID parameter in the query
                 ResultSet rs = retrieveStmt.executeQuery(); // Execute the query
@@ -149,6 +140,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
 
             // Check if the player exists
+            // TODO: SELECT in redundant because DELETE will suffice to prove whether id exists.
             try (PreparedStatement selectStmt = conn.prepareStatement("SELECT 1 FROM player WHERE id = ?")) {
                 selectStmt.setLong(1, id);
                 ResultSet rs = selectStmt.executeQuery();
