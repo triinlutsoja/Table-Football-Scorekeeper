@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepository;
 import org.springframework.stereotype.Service;
@@ -52,18 +53,15 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Optional<Player> updatePlayer(Long id, Player player) {
+    public Player updatePlayer(Long id, Player player) {
         // Validate player
         validatePlayer(player);
 
-        // TODO: Validate that player exists on the SERVICE LAYER, not it repo.
-
-        try {
+        // Validate that player exists to proceed with update
+        if (getPlayer(id).isPresent()) {
             return playerRepository.updatePlayer(id, player);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to update player: " + e.getMessage());
-            throw new RuntimeException("PlayerService failed to update player.", e);
         }
+        throw new EntityNotFoundException("Player with id " + id + " not found.");
     }
 
     @Override

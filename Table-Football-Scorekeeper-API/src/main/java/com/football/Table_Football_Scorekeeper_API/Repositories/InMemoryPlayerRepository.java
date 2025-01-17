@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +39,14 @@ public class InMemoryPlayerRepository implements PlayerRepository {
     }
 
     @Override
-    public Optional<Player> updatePlayer(Long id, Player player) {
+    public Player updatePlayer(Long id, Player player) {
         for (Player p : db) {
             if (p.getId().equals(id)) {
                 p.setName(player.getName());
-                return Optional.of(p);
+                return p;
             }
         }
-        return Optional.empty();
+        throw new EntityNotFoundException("The player you want to update does not exist.");
     }
 
     @Override

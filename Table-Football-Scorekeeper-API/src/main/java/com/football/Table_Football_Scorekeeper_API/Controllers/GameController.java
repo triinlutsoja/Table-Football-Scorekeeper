@@ -42,9 +42,9 @@ public class GameController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Optional<Game>> updateGame(@PathVariable Long id, @RequestBody Game game) {
-        Optional<Game> updatedGame = gameService.updateGame(id, game);
-        if (updatedGame.isPresent()) {
+    public ResponseEntity<Game> updateGame(@PathVariable Long id, @RequestBody Game game) {
+        Game updatedGame = gameService.updateGame(id, game);
+        if (updatedGame != null) {
             return ResponseEntity.status(200).body(updatedGame);
         }
         return ResponseEntity.status(404).build();

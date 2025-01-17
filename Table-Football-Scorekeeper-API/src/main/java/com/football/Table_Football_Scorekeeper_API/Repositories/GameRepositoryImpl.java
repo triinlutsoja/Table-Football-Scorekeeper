@@ -109,7 +109,7 @@ public class GameRepositoryImpl implements GameRepository {
     }
 
     @Override
-    public Optional<Game> updateGame(Long id, Game game) {
+    public Game updateGame(Long id, Game game) {
 
         // Get connection, execute query, update. Try-with-resources closes stuff automatically
         try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
@@ -126,16 +126,11 @@ public class GameRepositoryImpl implements GameRepository {
                 updateStmt.setInt(4, game.getScoreBlack());
                 updateStmt.setTimestamp(5, Timestamp.valueOf(game.getTimestamp()));
                 updateStmt.setLong(6, id);
-                int rowsAffected = updateStmt.executeUpdate();
-
-                // If no rows were affected, the game does not exist
-                if (rowsAffected == 0) {
-                    return Optional.empty();
-                }
+                updateStmt.executeUpdate();
 
                 // Return the updated game
                 game.setId(id);
-                return Optional.of(game);
+                return game;
             }
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);

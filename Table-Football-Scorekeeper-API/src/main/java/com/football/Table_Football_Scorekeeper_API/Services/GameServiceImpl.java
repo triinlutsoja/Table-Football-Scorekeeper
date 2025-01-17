@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.GameRepository;
 import org.springframework.stereotype.Service;
@@ -75,17 +76,15 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Optional<Game> updateGame(Long id, Game game) {
-
+    public Game updateGame(Long id, Game game) {
         // Validate game
         validateGame(game);
 
-        try {
+        // Validate that game exists to proceed with update
+        if (getGame(id).isPresent()) {
             return gameRepository.updateGame(id, game);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to update game: " + e.getMessage());
-            throw new RuntimeException("GameService failed to update game.", e);
         }
+        throw new EntityNotFoundException("Game with id " + id + " not found.");
     }
 
     @Override

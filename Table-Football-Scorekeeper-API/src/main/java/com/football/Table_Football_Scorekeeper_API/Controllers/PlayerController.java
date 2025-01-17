@@ -1,6 +1,8 @@
 package com.football.Table_Football_Scorekeeper_API.Controllers;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Services.PlayerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,7 @@ public class PlayerController {
         if (existingPlayer.isPresent()) {
             return ResponseEntity.status(200).body(existingPlayer.get());
         }
-        return ResponseEntity.status(404).build();  // TODO: 404=Page not found. Check the status code!
+        return ResponseEntity.status(404).build(); // Resource=Player not found
     }
 
     @GetMapping
@@ -41,11 +43,12 @@ public class PlayerController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player) {
-        Optional<Player> updatedPlayer = playerService.updatePlayer(id, player);
-        if (updatedPlayer.isPresent()) {
-            return ResponseEntity.status(200).body(updatedPlayer.get());
+        Player updatedPlayer = playerService.updatePlayer(id, player);
+        if (updatedPlayer != null) {
+            return ResponseEntity.status(200).body(updatedPlayer);
         }
-        return ResponseEntity.status(404).build();  // TODO: 404=Page not found. Check the status code!
+        return ResponseEntity.status(400).build();
+
     }
 
     @DeleteMapping("/{id}")
@@ -53,7 +56,7 @@ public class PlayerController {
         if (playerService.deletePlayer(id)) {
             return ResponseEntity.noContent().build();  // 204 No Content when deletion is successful
         }
-        return ResponseEntity.status(404).build();  // TODO: 404=Page not found. Check the status code!
+        return ResponseEntity.status(404).build();  // Resource=Player not found
     }
 
     @GetMapping("/by-name")

@@ -11,7 +11,7 @@ public interface GameRepository {
     Game addGame(Game game);
     Optional<Game> getGame(Long id);
     List<Game> getAllGames();
-    Optional<Game> updateGame(Long id, Game game);
+    Game updateGame(Long id, Game game);
     boolean deleteGame(Long id);
     List<PlayerStat> calculateWinStats();
 }

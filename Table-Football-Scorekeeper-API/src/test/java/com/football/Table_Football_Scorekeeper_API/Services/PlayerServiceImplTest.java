@@ -127,29 +127,14 @@ class PlayerServiceImplTest {
     void updatePlayer_ShouldUpdatePlayer_WhenPlayerExists() {
         // Arrange
         Player updatedPlayer = new Player("Updated John Doe");
-        Long playerId = 1L;  // a player with this ID exists
+        Long playerId = 1L;  // a player "John Doe" with this ID exists
 
         // Act
-        Optional<Player> playerToBeUpdated = playerService.updatePlayer(playerId, updatedPlayer);
+        Player playerToBeUpdated = playerService.updatePlayer(playerId, updatedPlayer);
 
         // Assert
-        assertTrue(playerToBeUpdated.isPresent());
-        assertEquals("Updated John Doe", playerToBeUpdated.get().getName());
-    }
-
-    @Test
-    void updatePlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {
-        // TODO: This test becomes redundant because this scenario is already tested with getPlayer.
-
-        // Arrange
-        Player updatedPlayer = new Player("Updated John Doe");
-        Long playerId = 99L;  // a player with this ID does not exist
-
-        // Act
-        Optional<Player> nonExistingPlayerToBeUpdated = playerService.updatePlayer(playerId, updatedPlayer);
-
-        // Assert
-        assertTrue(nonExistingPlayerToBeUpdated.isEmpty());
+        assertNotNull(playerToBeUpdated);
+        assertEquals("Updated John Doe", playerToBeUpdated.getName());
     }
 
     @Test

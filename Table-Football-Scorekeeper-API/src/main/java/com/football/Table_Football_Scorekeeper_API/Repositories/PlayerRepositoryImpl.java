@@ -2,6 +2,7 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Profile;
 import org.springframework.stereotype.Repository;
 
@@ -95,27 +96,22 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     }
 
     @Override
-    public Optional<Player> updatePlayer(Long id, Player player) {
+    public Player updatePlayer(Long id, Player player) {
 
-        try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = db.connect(props);
+             PreparedStatement updateStmt = conn.prepareStatement("UPDATE player SET name = ? WHERE id = ?")) {  // fetching the existing connection from DatabaseConnection
 
             // Attempt to update the player
-            try (PreparedStatement updateStmt = conn.prepareStatement("UPDATE player SET name = ? WHERE id = ?")) {
-                updateStmt.setString(1, player.getName());
-                updateStmt.setLong(2, id);
-                int rowsAffected = updateStmt.executeUpdate();
+            updateStmt.setString(1, player.getName());
+            updateStmt.setLong(2, id);
+            updateStmt.executeUpdate();
 
-                // If no rows were affected, the player does not exist
-                if (rowsAffected == 0) {
-                    return Optional.empty();
-                }
+            // Return the updated player
+            player.setId(id);
+            return player;
 
-                // Return the updated player
-                player.setId(id);
-                return Optional.of(player);
-            }
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage());
         }
     }
 

@@ -10,8 +10,7 @@ public interface PlayerRepository {
     Player addPlayer(Player player);
     Optional<Player> getPlayer(Long id);
     List<Player> getAllPlayers();
-    Optional<Player> updatePlayer(Long id, Player player);  // TODO: update should not be Optional, either you can
-    // update or not. Just Player will do.
+    Player updatePlayer(Long id, Player player);
     boolean deletePlayer(Long id);
 
     // Custom query methods

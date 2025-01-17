@@ -348,33 +348,17 @@ class GameServiceImplTest {
         Game updatedGame = new Game(LocalDateTime.now(),2L, 1L, 4, 8);
         updatedGame.setId(1L);
 
-        when(gameRepository.updateGame(1L, updatedGame)).thenReturn(Optional.of(updatedGame));  // Mock repository
-        // updateGame behavior
+        when(gameRepository.getGame(1L)).thenReturn(Optional.of(existingGame));  // Mock repository behaviour
+        when(gameRepository.updateGame(1L, updatedGame)).thenReturn(updatedGame);  // Mock repository behaviour
 
         // Act
-        Optional<Game> retrievedGame = gameService.updateGame(1L, updatedGame);
+        Game retrievedGame = gameService.updateGame(1L, updatedGame);
 
         // Assert
-        assertTrue(retrievedGame.isPresent());
-        assertEquals(updatedGame.getId(), retrievedGame.get().getId());
-        assertEquals(updatedGame.getScoreGrey(), retrievedGame.get().getScoreGrey());
-        assertEquals(updatedGame.getScoreBlack(), retrievedGame.get().getScoreBlack());
-    }
-
-    @Test
-    void updateGame_ShouldReturnEmptyOptional_WhenGameDoesNotExist() {
-        // Arrange
-        Game updatedGame = new Game(LocalDateTime.now(),2L, 1L, 4, 8);
-        updatedGame.setId(99L);
-
-        when(gameRepository.updateGame(99L, updatedGame)).thenReturn(Optional.empty());  // Mock repository updateGame
-        // behavior
-
-        // Act
-        Optional<Game> retrievedGame = gameService.updateGame(99L, updatedGame);
-
-        // Assert
-        assertTrue(retrievedGame.isEmpty());
+        assertNotNull(retrievedGame);
+        assertEquals(updatedGame.getId(), retrievedGame.getId());
+        assertEquals(updatedGame.getScoreGrey(), retrievedGame.getScoreGrey());
+        assertEquals(updatedGame.getScoreBlack(), retrievedGame.getScoreBlack());
     }
 
     @Test
