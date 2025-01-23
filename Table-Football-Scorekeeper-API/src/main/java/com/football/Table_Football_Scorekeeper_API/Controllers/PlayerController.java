@@ -7,6 +7,7 @@ import com.football.Table_Football_Scorekeeper_API.Services.PlayerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,10 +45,12 @@ public class PlayerController {
     @PutMapping("/{id}")
     public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player) {
         Player updatedPlayer = playerService.updatePlayer(id, player);
-        if (updatedPlayer != null) {
+        return ResponseEntity.status(200).body(updatedPlayer);
+
+        /*if (updatedPlayer != null) {
             return ResponseEntity.status(200).body(updatedPlayer);
         }
-        return ResponseEntity.status(400).build();
+        return ResponseEntity.status(400).build();*/
 
     }
 

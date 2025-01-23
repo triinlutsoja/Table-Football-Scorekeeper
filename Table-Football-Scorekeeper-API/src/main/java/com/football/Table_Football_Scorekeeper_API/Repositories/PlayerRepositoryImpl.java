@@ -2,6 +2,7 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.DatabaseException;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Profile;
 import org.springframework.stereotype.Repository;
@@ -99,7 +100,8 @@ public class PlayerRepositoryImpl implements PlayerRepository {
     public Player updatePlayer(Long id, Player player) {
 
         try (Connection conn = db.connect(props);
-             PreparedStatement updateStmt = conn.prepareStatement("UPDATE player SET name = ? WHERE id = ?")) {  // fetching the existing connection from DatabaseConnection
+             PreparedStatement updateStmt = conn.prepareStatement("UPDATE player SET name = ? WHERE id = ?")) {  //
+            // fetching the existing connection from DatabaseConnection
 
             // Attempt to update the player
             updateStmt.setString(1, player.getName());
@@ -110,8 +112,9 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             player.setId(id);
             return player;
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage());
+        } catch (SQLException e) {  // Letting SQLException propagate up to the controller layer is generally discouraged because it’s a low-level, database-specific detail.
+            throw new DatabaseException("Error updating player with id " + id, e);  // It’s better to wrap it in a
+            // custom exception  and propagate.
         }
     }
 

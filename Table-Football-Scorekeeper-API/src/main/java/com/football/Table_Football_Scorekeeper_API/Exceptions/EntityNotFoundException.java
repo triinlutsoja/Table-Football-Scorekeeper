@@ -11,6 +11,6 @@ public class EntityNotFoundException extends RuntimeException {
     }
 
     public EntityNotFoundException() {
-        super("Player not found.");
+        super("Entity not found.");
     }
 }

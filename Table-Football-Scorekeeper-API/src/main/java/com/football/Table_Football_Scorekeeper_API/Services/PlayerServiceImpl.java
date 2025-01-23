@@ -6,6 +6,7 @@ import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationExceptio
 import com.football.Table_Football_Scorekeeper_API.Repositories.PlayerRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,7 +62,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (getPlayer(id).isPresent()) {
             return playerRepository.updatePlayer(id, player);
         }
-        throw new EntityNotFoundException("Player with id " + id + " not found.");
+        throw new EntityNotFoundException("PlayerService: Player with id " + id + " not found.");
     }
 
     @Override
@@ -87,7 +88,7 @@ public class PlayerServiceImpl implements PlayerService {
     private boolean validatePlayer(Player player) {
         // Validate that the player's name is not null or empty
         if (player.getName() == null || player.getName().isEmpty()) {
-            throw new ValidationException("Player name cannot be null or empty.");
+            throw new ValidationException("PlayerService: Player name cannot be null or empty.");
         }
         return true;
     }
