@@ -44,15 +44,11 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game addGame(Game game) {
-        // Validate game
+        // Validate the game object, will throw ValidationException if invalid
         validateGame(game);
 
-        try {
-            return gameRepository.addGame(game);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to add game: " + e.getMessage());
-            throw new RuntimeException("GameService failed to add game.", e);
-        }
+        // If validation passes, delegate the operation to the repository
+        return gameRepository.addGame(game);
     }
 
     @Override

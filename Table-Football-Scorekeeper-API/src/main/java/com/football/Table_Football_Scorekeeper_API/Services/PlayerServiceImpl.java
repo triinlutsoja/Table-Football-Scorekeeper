@@ -22,10 +22,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player addPlayer(Player player) {
-        if (validatePlayer(player)) {
-            return playerRepository.addPlayer(player);
-        }
-        throw new RuntimeException("PlayerService: Failed to add player.");
+        // Validate the player object, will throw ValidationException if invalid
+        validatePlayer(player);
+
+        // If validation passes, delegate the operation to the repository
+        return playerRepository.addPlayer(player);
     }
 
     @Override

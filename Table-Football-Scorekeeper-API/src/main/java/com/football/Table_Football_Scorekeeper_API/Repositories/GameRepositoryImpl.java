@@ -3,6 +3,7 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
 import com.football.Table_Football_Scorekeeper_API.Entities.PlayerStat;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.DatabaseException;
 import com.football.Table_Football_Scorekeeper_API.Profile;
 import org.springframework.stereotype.Repository;
 
@@ -43,13 +44,24 @@ public class GameRepositoryImpl implements GameRepository {
             if (generatedKeys.next()) {
                 Long generatedId = generatedKeys.getLong(1);
                 game.setId(generatedId);
-                return game;
+            } else {
+                throw new DatabaseException("Failed to retrieve generated ID for the inserted game.");
+            }
+
+            // Perform a SELECT query to retrieve the timestamp
+            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT timestamp FROM game WHERE id = ?")) {
+                selectStmt.setLong(1, game.getId());
+                ResultSet rs = selectStmt.executeQuery();
+                if (rs.next()) {
+                    game.setTimestamp(rs.getTimestamp("timestamp").toLocalDateTime());
+                } else {
+                    throw new DatabaseException("Failed to retrieve timestamp for the inserted game.");
+                }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        // Explicitly throw an exception on rare edge cases
-        throw new RuntimeException("Failed to add game to the database.");
+        return game;
     }
 
 

@@ -23,7 +23,7 @@ public class GameController {
     @PostMapping
     public ResponseEntity<Game> addGame(@RequestBody Game game) {
         Game newGame = gameService.addGame(game);
-        return ResponseEntity.status(200).body(newGame);
+        return ResponseEntity.status(201).body(newGame);
     }
 
     @GetMapping("/{id}")
