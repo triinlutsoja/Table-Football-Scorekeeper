@@ -3,7 +3,6 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.DatabaseException;
-import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Profile;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +25,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Player addPlayer(Player player) {
-
+        Long generatedId = null;
         // Get connection, execute action, add player to the database
         try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO player (name) VALUES(?)",
@@ -38,17 +37,15 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             // Retrieve the auto-generated ID
             ResultSet generatedKeys = insertStmt.getGeneratedKeys();
             if (generatedKeys.next()) {
-                Long generatedId = generatedKeys.getLong(1);  // The first column is the generated key
-
-                // Set the generated ID on the player object
-                player.setId(generatedId);
-                return player;
+                generatedId = generatedKeys.getLong(1);  // The first column is the generated key
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        // Explicitly throw an exception on rare edge cases
-        throw new RuntimeException("Failed to add player to the database.");
+
+        // Set the generated ID on the player object
+        player.setId(generatedId);
+        return player;
     }
 
     @Override

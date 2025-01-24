@@ -66,7 +66,7 @@ class PlayerServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
+        assertEquals("PlayerService: Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
     }
 
 
@@ -86,7 +86,7 @@ class PlayerServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
+        assertEquals("PlayerService: Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
     }
 
     @Test

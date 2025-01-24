@@ -46,12 +46,6 @@ public class PlayerController {
     public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player) {
         Player updatedPlayer = playerService.updatePlayer(id, player);
         return ResponseEntity.status(200).body(updatedPlayer);
-
-        /*if (updatedPlayer != null) {
-            return ResponseEntity.status(200).body(updatedPlayer);
-        }
-        return ResponseEntity.status(400).build();*/
-
     }
 
     @DeleteMapping("/{id}")
