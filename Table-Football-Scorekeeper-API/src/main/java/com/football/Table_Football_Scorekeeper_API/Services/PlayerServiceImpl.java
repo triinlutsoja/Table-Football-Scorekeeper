@@ -39,12 +39,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<Player> getAllPlayers() {
-        try {
-            return playerRepository.getAllPlayers();
-        } catch (RuntimeException e) {
-            System.err.println("Failed to retrieve all players: " + e.getMessage());
-            throw new RuntimeException("PlayerService failed to retrieve all players.", e);
-        }
+        return playerRepository.getAllPlayers();
     }
 
     @Override
