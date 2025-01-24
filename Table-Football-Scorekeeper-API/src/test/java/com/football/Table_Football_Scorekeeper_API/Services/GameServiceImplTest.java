@@ -332,9 +332,11 @@ class GameServiceImplTest {
     void getAllGames_ShouldReturnAllGames() {
         // Arrange
         List<Game> games = new ArrayList<>();
+
         Game existingGame1 = new Game(LocalDateTime.now(),2L, 1L, 8, 4);
         existingGame1.setId(1L);  // mock repository's behaviour of automatically adding an ID
         games.add(existingGame1);
+
         Game existingGame2 = new Game(LocalDateTime.now(),2L, 1L, 8, 4);
         existingGame2.setId(2L);  // mock repository's behaviour of automatically adding an ID
         games.add(existingGame2);
@@ -345,7 +347,7 @@ class GameServiceImplTest {
         List<Game> retrievedGames = gameService.getAllGames();
 
         // Assert
-        assertTrue(retrievedGames.size() == 2);
+        assertEquals(2, retrievedGames.size());
     }
 
     @Test

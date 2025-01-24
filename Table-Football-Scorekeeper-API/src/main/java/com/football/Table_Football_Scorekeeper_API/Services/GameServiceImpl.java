@@ -63,12 +63,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<Game> getAllGames() {
-        try {
-            return gameRepository.getAllGames();
-        } catch (RuntimeException e) {
-            System.err.println("Failed to retrieve all games: " + e.getMessage());
-            throw new RuntimeException("GameService failed to retrieve all games.", e);
-        }
+        return gameRepository.getAllGames();
     }
 
     @Override
