@@ -30,10 +30,7 @@ public class PlayerController {
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
         Optional<Player> existingPlayer = playerService.getPlayer(id);
-        if (existingPlayer.isPresent()) {
-            return ResponseEntity.status(200).body(existingPlayer.get());
-        }
-        return ResponseEntity.status(404).build(); // Resource=Player not found
+        return ResponseEntity.status(200).body(existingPlayer.get());
     }
 
     @GetMapping

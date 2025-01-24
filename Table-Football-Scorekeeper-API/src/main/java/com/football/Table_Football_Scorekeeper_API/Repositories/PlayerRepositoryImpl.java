@@ -65,10 +65,11 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                 retrievedPlayer.setName(rs.getString("name")); // Map the "name" column to name
                 return Optional.of(retrievedPlayer); // Return the Player wrapped in an Optional
             }
+            return Optional.empty(); // Return empty Optional if no player with the given id is found
+
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return Optional.empty(); // Return empty Optional if no player with the given id is found
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Player;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.InMemoryPlayerRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -109,10 +110,18 @@ class PlayerServiceImplTest {
         Long playerId = 99L;
 
         // Act
-        Optional<Player> nonExistingPlayer = playerService.getPlayer(playerId);
+        EntityNotFoundException thrown = null;
+        try {
+            playerService.getPlayer(playerId);
+        } catch (EntityNotFoundException e) {
+            thrown = e;
+        }
 
         // Assert
-        assertTrue(nonExistingPlayer.isEmpty());
+        assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown");  // if no exception gets thrown,
+        // display message
+        assertEquals("PlayerService: Player with id " + playerId + " not found.", thrown.getMessage());  // Messages
+        // should match
     }
 
     @Test

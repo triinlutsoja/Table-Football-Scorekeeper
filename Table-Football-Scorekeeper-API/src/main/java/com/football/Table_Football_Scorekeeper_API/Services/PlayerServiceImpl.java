@@ -30,12 +30,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Optional<Player> getPlayer(Long id) {
-        try {
-            return playerRepository.getPlayer(id);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to retrieve player: " + e.getMessage());
-            throw new RuntimeException("PlayerService failed to retrieve player.", e);
+        Optional<Player> retrievedPlayer = playerRepository.getPlayer(id);
+        if (retrievedPlayer.isPresent()) {
+            return retrievedPlayer;
         }
+        throw new EntityNotFoundException("PlayerService: Player with id " + id + " not found.");
     }
 
     @Override
