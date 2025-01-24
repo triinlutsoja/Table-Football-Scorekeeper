@@ -41,17 +41,12 @@ public class GameController {
     @PutMapping("/{id}")
     public ResponseEntity<Game> updateGame(@PathVariable Long id, @RequestBody Game game) {
         Game updatedGame = gameService.updateGame(id, game);
-        if (updatedGame != null) {
-            return ResponseEntity.status(200).body(updatedGame);
-        }
-        return ResponseEntity.status(404).build();
+        return ResponseEntity.status(200).body(updatedGame);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
-        if (gameService.deleteGame(id)) {
-            return ResponseEntity.noContent().build();  // 204 No Content when deletion is successful
-        }
-        return ResponseEntity.status(404).build();
+        boolean isDeleted = gameService.deleteGame(id);
+        return ResponseEntity.status(204).build();  // 204 No Content when deletion is successful
     }
 }

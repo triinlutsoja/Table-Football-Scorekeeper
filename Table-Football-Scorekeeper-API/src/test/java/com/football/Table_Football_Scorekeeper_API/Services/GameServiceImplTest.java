@@ -355,6 +355,7 @@ class GameServiceImplTest {
         // Arrange
         Game existingGame = new Game(LocalDateTime.now(),2L, 1L, 8, 4);
         existingGame.setId(1L);  // mock repository's behaviour of automatically adding an ID
+
         Game updatedGame = new Game(LocalDateTime.now(),2L, 1L, 4, 8);
         updatedGame.setId(1L);
 

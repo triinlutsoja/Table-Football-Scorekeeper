@@ -106,14 +106,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             updateStmt.setLong(2, id);
             updateStmt.executeUpdate();
 
-            // Return the updated player
-            player.setId(id);
-            return player;
-
         } catch (SQLException e) {  // Letting SQLException propagate up to the controller layer is generally discouraged because it’s a low-level, database-specific detail.
             throw new DatabaseException("Error updating player with id " + id, e);  // It’s better to wrap it in a
             // custom exception  and propagate.
         }
+
+        // Return the updated player
+        player.setId(id);
+        return player;
     }
 
     @Override

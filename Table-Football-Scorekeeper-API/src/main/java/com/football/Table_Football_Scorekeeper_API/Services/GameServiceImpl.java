@@ -75,16 +75,15 @@ public class GameServiceImpl implements GameService {
         if (getGame(id).isPresent()) {
             return gameRepository.updateGame(id, game);
         }
-        throw new EntityNotFoundException("Game with id " + id + " not found.");
+        throw new EntityNotFoundException("GameService: Game with id " + id + " not found.");
     }
 
     @Override
     public boolean deleteGame(Long id) {
-        try {
-            return gameRepository.deleteGame(id);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to delete game: " + e.getMessage());
-            throw new RuntimeException("GameService failed to delete game.", e);
-        }
+       if (gameRepository.deleteGame(id)) {
+           return true;
+       } else {
+           throw new EntityNotFoundException("GameService: Game with id " + id + " not found.");
+       }
     }
 }

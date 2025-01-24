@@ -89,7 +89,7 @@ public class GameRepositoryImpl implements GameRepository {
             }
             return Optional.empty(); // Return empty Optional if no game with the given id is found
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
     }
 
@@ -116,7 +116,7 @@ public class GameRepositoryImpl implements GameRepository {
             }
             return games; // Return the List of games (even if it's empty)
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
     }
 
@@ -129,9 +129,7 @@ public class GameRepositoryImpl implements GameRepository {
             // Attempt to update the game
             try (PreparedStatement updateStmt =
                          conn.prepareStatement("UPDATE game SET greyId=?, blackId=?, scoreGrey=?,scoreBlack=?," +
-                                 "timestamp=?" +
-                                 " WHERE " +
-                                 "id=?")) {
+                                 "timestamp=? WHERE id=?")) {
                 updateStmt.setLong(1, game.getGreyId());
                 updateStmt.setLong(2, game.getBlackId());
                 updateStmt.setInt(3, game.getScoreGrey());
@@ -139,14 +137,14 @@ public class GameRepositoryImpl implements GameRepository {
                 updateStmt.setTimestamp(5, Timestamp.valueOf(game.getTimestamp()));
                 updateStmt.setLong(6, id);
                 updateStmt.executeUpdate();
-
-                // Return the updated game
-                game.setId(id);
-                return game;
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
+
+        // Return the updated game
+        game.setId(id);
+        return game;
     }
 
 
@@ -156,24 +154,14 @@ public class GameRepositoryImpl implements GameRepository {
         // Get connection, execute query, delete. Try-with-resources closes stuff automatically
         try (Connection conn = db.connect(props)) {
 
-            // Check if game exists
-            try (PreparedStatement selectStmt = conn.prepareStatement("SELECT 1 FROM game WHERE id=?")) {
-                selectStmt.setLong(1, id);
-                ResultSet rs = selectStmt.executeQuery();
-                if (!rs.next()) {
-                    return false;  // If no such game exists, return false
-                }
-            }
-
             // Delete the existing game
             try (PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM game WHERE id=?")){
                 deleteStmt.setLong(1, id);
                 int rowsAffected = deleteStmt.executeUpdate();
-                return rowsAffected > 0;
+                return rowsAffected > 0;  // If true, game exists and has been deleted. If false, didn't exist
             }
         } catch (SQLException e) {
-            System.err.println("Error deleting player with " + id + ": " + e.getMessage());
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
     }
 
