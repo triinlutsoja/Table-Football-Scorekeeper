@@ -18,11 +18,6 @@ public class GameStatsServiceImpl implements GameStatsService {
 
     @Override
     public List<PlayerStat> calculateWinStats() {
-        try {
-            return gameRepository.calculateWinStats();
-        } catch (RuntimeException e) {
-            System.err.println("Failed to retrieve win stats: " + e.getMessage());
-            throw new RuntimeException("GameService failed to retrieve win stats.", e);
-        }
+       return gameRepository.calculateWinStats();
     }
 }

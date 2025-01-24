@@ -377,10 +377,10 @@ class GameServiceImplTest {
         // Arrange
         Long gameId = 1L;  // a game with this ID exists
 
-        when(gameRepository.deleteGame(1L)).thenReturn(true);  // Mock repository deleteGame behavior
+        when(gameRepository.deleteGame(gameId)).thenReturn(true);  // Mock repository deleteGame behavior
 
         // Act
-        boolean isDeleted = gameService.deleteGame(1L);
+        boolean isDeleted = gameService.deleteGame(gameId);
 
         // Assert
         assertTrue(isDeleted);
@@ -391,12 +391,19 @@ class GameServiceImplTest {
         // Arrange
         Long gameId = 99L;  // a game with this ID does not exist
 
-        when(gameRepository.deleteGame(99L)).thenReturn(false);  // Mock repository deleteGame behavior
+        when(gameRepository.deleteGame(gameId)).thenReturn(false);  // Mock repository deleteGame behavior
 
         // Act
-        boolean isDeleted = gameService.deleteGame(99L);
+        EntityNotFoundException thrown = null;
+        try {
+            gameService.deleteGame(gameId);
+        } catch (EntityNotFoundException e) {
+            thrown = e;
+        }
 
         // Assert
-        assertFalse(isDeleted);
+        assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown");
+        assertEquals("GameService: Game with id " + gameId + " not found.", thrown.getMessage());  //
+        // Messages should match
     }
 }

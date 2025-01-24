@@ -195,7 +195,7 @@ public class GameRepositoryImpl implements GameRepository {
                 winnerStats.add(retrievedPlayerStat);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
         return winnerStats; // Return the List of game stats (even if it's empty)
     }
