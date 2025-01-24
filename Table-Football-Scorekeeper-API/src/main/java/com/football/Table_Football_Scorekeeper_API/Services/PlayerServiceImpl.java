@@ -56,12 +56,10 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public boolean deletePlayer(Long id) {
-        try {
-            return playerRepository.deletePlayer(id);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to delete player: " + e.getMessage());
-            throw new RuntimeException("PlayerService failed to delete player.", e);
+        if (playerRepository.deletePlayer(id)) {
+            return true;
         }
+        throw new EntityNotFoundException("PlayerService: Player with id " + id + " not found.");
     }
 
     @Override

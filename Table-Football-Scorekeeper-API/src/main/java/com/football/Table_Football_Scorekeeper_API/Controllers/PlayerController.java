@@ -47,10 +47,7 @@ public class PlayerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePlayer(@PathVariable Long id) {
-        if (playerService.deletePlayer(id)) {
-            return ResponseEntity.noContent().build();  // 204 No Content when deletion is successful
-        }
-        return ResponseEntity.status(404).build();  // Resource=Player not found
+        return ResponseEntity.status(204).build();  // 204 No Content when deletion is successful
     }
 
     @GetMapping("/by-name")

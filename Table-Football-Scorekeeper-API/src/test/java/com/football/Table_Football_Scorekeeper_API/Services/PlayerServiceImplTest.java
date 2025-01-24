@@ -163,22 +163,6 @@ class PlayerServiceImplTest {
         // TODO: Make sure that John is deleted, and not Peter. Now you can't be sure, who got deleted.
     }
 
-
-    @Test
-    void deletePlayer_ShouldReturnFalse_WhenPlayerDoesNotExist() {
-        // TODO: This test becomes redundant because this scenario is already tested with getPlayer.
-        
-        // Arrange
-        Long playerId = 99L;  // a player with this ID does not exist
-
-        // Act
-        boolean isDeleted = playerService.deletePlayer(playerId);
-
-        // Assert
-        assertFalse(isDeleted);
-        assertEquals(2, playerRepository.getAllPlayers().size());
-    }
-
     @Test
     void getPlayersByName_ShouldReturnPlayers_WhenNameMatches() {
         // Arrange
