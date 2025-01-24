@@ -151,7 +151,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             }
             return playersWithSpecificName;
         } catch (SQLException e) {
-            throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
+            throw new DatabaseException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
     }
 }

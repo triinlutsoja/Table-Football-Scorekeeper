@@ -64,12 +64,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public List<Player> findByNameIgnoreCase(String name) {
-        try {
-            return playerRepository.findByNameIgnoreCase(name);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to retrieve all players with the name " + name + "." + e.getMessage());
-            throw new RuntimeException("PlayerService failed to retrieve all players with a specific name.", e);
-        }
+        return playerRepository.findByNameIgnoreCase(name);
     }
 
     private boolean validatePlayer(Player player) {
