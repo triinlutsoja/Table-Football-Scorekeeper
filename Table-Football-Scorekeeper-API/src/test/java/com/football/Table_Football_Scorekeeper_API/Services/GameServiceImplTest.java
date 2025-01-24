@@ -1,6 +1,7 @@
 package com.football.Table_Football_Scorekeeper_API.Services;
 
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
+import com.football.Table_Football_Scorekeeper_API.Exceptions.EntityNotFoundException;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.ValidationException;
 import com.football.Table_Football_Scorekeeper_API.Repositories.GameRepository;
 import org.junit.jupiter.api.Assertions;
@@ -306,18 +307,25 @@ class GameServiceImplTest {
     }
 
     @Test
-    void getGame_ShouldReturnEmptyOptional_WhenGameDoesNotExist() {
+    void getGame_ShouldThrowEntityNotFoundException_WhenGameDoesNotExist() {
         // Arrange
         Long nonExistingGameId = 99L;
 
         when(gameRepository.getGame(nonExistingGameId)).thenReturn(Optional.empty());  // Mock repository getGame behavior
 
         // Act
-        Optional<Game> nonExistingGame = gameService.getGame(nonExistingGameId);
+        EntityNotFoundException thrown = null;
+        try {
+            gameService.getGame(nonExistingGameId);
+        } catch (EntityNotFoundException e) {
+            thrown = e;
+        }
 
         // Assert
-        assertTrue(nonExistingGame.isEmpty());
-        assertEquals(Optional.empty(), nonExistingGame);
+        assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown");  // if no exception gets thrown,
+        // display message
+        assertEquals("GameService: Game with id " + nonExistingGameId + " not found.", thrown.getMessage());  //
+        // Messages should match
     }
 
     @Test

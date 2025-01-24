@@ -29,10 +29,7 @@ public class GameController {
     @GetMapping("/{id}")
     public ResponseEntity<Game> getGame(@PathVariable Long id) {
         Optional<Game> existingGame = gameService.getGame(id);
-        if (existingGame.isPresent()) {
-            return ResponseEntity.status(200).body(existingGame.get());
-        }
-        return ResponseEntity.status(404).build();
+        return ResponseEntity.status(200).body(existingGame.get());
     }
 
     @GetMapping()

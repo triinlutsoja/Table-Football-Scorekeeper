@@ -53,11 +53,11 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Optional<Game> getGame(Long id) {
-        try {
-            return gameRepository.getGame(id);
-        } catch (RuntimeException e) {
-            System.err.println("Failed to retrieve game: " + e.getMessage());
-            throw new RuntimeException("GameService failed to retrieve game.", e);
+        Optional<Game> retrievedGame = gameRepository.getGame(id);
+        if (retrievedGame.isPresent()) {
+            return retrievedGame;
+        } else {
+            throw new EntityNotFoundException("GameService: Game with id " + id + " not found.");
         }
     }
 

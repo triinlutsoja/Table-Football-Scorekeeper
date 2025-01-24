@@ -105,7 +105,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void getPlayer_ShouldReturnEmptyOptional_WhenPlayerDoesNotExist() {
+    void getPlayer_ShouldThrowEntityNotFoundException_WhenPlayerDoesNotExist() {
         // Arrange
         Long playerId = 99L;
 

@@ -87,10 +87,10 @@ public class GameRepositoryImpl implements GameRepository {
                 retrievedGame.setScoreBlack(rs.getInt("scoreBlack"));
                 return Optional.of(retrievedGame); // Return the Game wrapped in an Optional
             }
+            return Optional.empty(); // Return empty Optional if no game with the given id is found
         } catch (SQLException e) {
             throw new RuntimeException("Error occurred during SQL operation: " + e.getMessage(), e);
         }
-        return Optional.empty(); // Return empty Optional if no game with the given id is found
     }
 
     @Override
