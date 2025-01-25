@@ -6,14 +6,17 @@ let timerInterval;
 // Handle form submission for adding a player
 document.getElementById("add-player-form").addEventListener("submit", async (e) => {
   e.preventDefault(); // Prevent the form from refreshing the page
+
   const playerName = document.getElementById("new-player-name").value.trim();
 
+  // Display error message if no name is entered
   if (!playerName) {
-    alert("Please enter a player name.");
+    displayMessage2("Please enter a player name.", "error");
     return;
   }
 
   try {
+    // Send POST request to add the player
     const response = await fetch("http://localhost:8080/players", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -25,13 +28,17 @@ document.getElementById("add-player-form").addEventListener("submit", async (e) 
     }
 
     const newPlayer = await response.json();
-    alert(`Player added successfully: ${newPlayer.name}`);
-    document.getElementById("new-player-name").value = ""; // Clear the input field
+
+    // Clear the input field and display success message
+    document.getElementById("new-player-name").value = "";
+    displayMessage2(`Player added successfully: ${newPlayer.name}`, "success");
 
     // Refresh player list
     fetchPlayers();
+
   } catch (error) {
-    console.error(error.message);
+    console.error("Error adding player:", error);
+    displayMessage2("Failed to add player. Please try again.", "error");
   }
 });
 
@@ -125,13 +132,11 @@ const endGame = () => {
   stopGameTimer();
 
   // Get the selected players and scores
-  // alert(`Game Over! Grey: ${greyScore}, Black: ${blackScore}`);
   const grey = document.getElementById("grey-player-select").value;
   const black = document.getElementById("black-player-select").value;
 
   if (!grey || !black) {
     displayMessage("Please select both players before ending the game.", "error");
-    // alert("Select players first!");
     return;
   }
 
@@ -148,22 +153,17 @@ const endGame = () => {
   };
 
   // Send data to the backend
-  // console.log("Sending game data to the backend:", requestBody); // Debug request body
   fetch("http://localhost:8080/games", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(requestBody),
   })
       .then((res) => {
-        // console.log("Response status:", res.status); // Log response status
-        // console.log("Response headers:", [...res.headers.entries()]); // Log all headers
         if (!res.ok) {
           throw new Error(`Error saving game: ${res.status}`);
         }
         return res.json();
       })
-      // .then((data) => console.log("Game saved successfully:", data)) // Log success response
-      // .catch((err) => console.error("Error saving game:", err)); // Log error
       .then((data) => {
       displayMessage(
       `Game Over! Grey: ${greyScore}, Black: ${blackScore}. Game saved successfully!`, "success"
@@ -179,6 +179,19 @@ const endGame = () => {
 // Function to display a message under the "End Game" button
 const displayMessage = (message, type) => {
   const messageElement = document.getElementById("end-game-message");
+
+  if (type === "success") {
+    messageElement.style.color = "green";
+  } else if (type === "error") {
+    messageElement.style.color = "red";
+  }
+
+  messageElement.textContent = message;
+};
+
+// Function to display a message under the "Add" button
+const displayMessage2 = (message, type) => {
+  const messageElement = document.getElementById("add-player-message");
 
   if (type === "success") {
     messageElement.style.color = "green";
