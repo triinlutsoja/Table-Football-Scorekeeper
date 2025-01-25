@@ -118,10 +118,6 @@ document.addEventListener("keydown", (e) => {
 const updateScore = () => {
   document.getElementById("score-grey").textContent = greyScore;
   document.getElementById("score-black").textContent = blackScore;
-
-  if (greyScore === 8 || blackScore === 8) {
-    endGame();
-  }
 };
 
 // End game and send results to backend
@@ -219,4 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
       startGameTimer();  // Start the timer when the "Start Game" button is clicked
     }
   });
+
+  // Add event listener to end the game
+  document.getElementById("end-game").addEventListener("click", () => {
+      endGame(); // End the game when the button is clicked
+    });
 });
