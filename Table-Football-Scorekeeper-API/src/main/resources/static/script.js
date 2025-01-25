@@ -123,12 +123,15 @@ const updateScore = () => {
 // End game and send results to backend
 const endGame = () => {
   stopGameTimer();
-  alert(`Game Over! Grey: ${greyScore}, Black: ${blackScore}`);
+
+  // Get the selected players and scores
+  // alert(`Game Over! Grey: ${greyScore}, Black: ${blackScore}`);
   const grey = document.getElementById("grey-player-select").value;
   const black = document.getElementById("black-player-select").value;
 
   if (!grey || !black) {
-    alert("Select players first!");
+    displayMessage("Please select both players before ending the game.", "error");
+    // alert("Select players first!");
     return;
   }
 
@@ -136,6 +139,7 @@ const endGame = () => {
     return; // Don't proceed if validation fails
   }
 
+  // Prepare the data to send to the backend
   const requestBody = {
     greyId: grey,
     blackId: black,
@@ -143,23 +147,57 @@ const endGame = () => {
     scoreBlack: blackScore,
   };
 
-  console.log("Sending game data to the backend:", requestBody); // Debug request body
-
+  // Send data to the backend
+  // console.log("Sending game data to the backend:", requestBody); // Debug request body
   fetch("http://localhost:8080/games", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(requestBody),
   })
       .then((res) => {
-        console.log("Response status:", res.status); // Log response status
-        console.log("Response headers:", [...res.headers.entries()]); // Log all headers
+        // console.log("Response status:", res.status); // Log response status
+        // console.log("Response headers:", [...res.headers.entries()]); // Log all headers
         if (!res.ok) {
           throw new Error(`Error saving game: ${res.status}`);
         }
         return res.json();
       })
-      .then((data) => console.log("Game saved successfully:", data)) // Log success response
-      .catch((err) => console.error("Error saving game:", err)); // Log error
+      // .then((data) => console.log("Game saved successfully:", data)) // Log success response
+      // .catch((err) => console.error("Error saving game:", err)); // Log error
+      .then((data) => {
+      displayMessage(
+      `Game Over! Grey: ${greyScore}, Black: ${blackScore}. Game saved successfully!`, "success"
+      );
+      resetGame();  // Reset scores and dropdowns
+      })
+      .catch((err) => {
+        console.error("Error saving game:", err);
+        displayMessage("Failed to save game. Please try again.", "error");
+      });
+};
+
+// Function to display a message under the "End Game" button
+const displayMessage = (message, type) => {
+  const messageElement = document.getElementById("end-game-message");
+
+  if (type === "success") {
+    messageElement.style.color = "green";
+  } else if (type === "error") {
+    messageElement.style.color = "red";
+  }
+
+  messageElement.textContent = message;
+};
+
+// Function to reset the game
+const resetGame = () => {
+  greyScore = 0;
+  blackScore = 0;
+  updateScore();
+
+  // Reset dropdown selections
+  document.getElementById("grey-player-select").value = "";
+  document.getElementById("black-player-select").value = "";
 };
 
 // Initialize when page loads
