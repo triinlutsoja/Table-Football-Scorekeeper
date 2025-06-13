@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Table Football Scorekeeper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Table Football Scorekeeper</h1>
+  <!--The id="players-section" is used by style.css.-->
+  <div id="players-section">
+    <h2>Add players</h2>
+    <form id="add-player-form">
+      <!--The id="new-player-name" is used by JavaScript to reference this input field when the user submits a new player.-->
+      <input type="text" id="new-player-name" placeholder="Enter player name" required>
+      <button type="submit">Add</button>
+      <p id="add-player-message"></p>
+    </form>
+    <div id="player-list">
+      <!-- Existing players will be dynamically loaded here -->
+    </div>
+  </div>
+  <!--The id="game-section" is used by style.css.-->
+  <div id="game-section">
+    <h2>Game</h2>
+    <!--The class="player-box" is used by style.css.-->
+    <div class="player-box" id="player-grey">
+      <h3>Grey Player</h3>
+      <!--JavaScript refers to id="grey-player-select" to populate the dropdown with player options.-->
+      <select id="grey-player-select"></select>
+    </div>
+    <div class="player-box" id="player-black">
+      <h3>Black Player</h3>
+      <!--JavaScript refers to id="black-player-select" to populate the dropdown with player options.-->
+      <select id="black-player-select"></select>
+    </div>
+    <div id="scoreboard">
+      <p>Grey: <span id="score-grey">0</span></p>
+      <p>Black: <span id="score-black">0</span></p>
+      <button id="start-game-button">Start Game</button>
+      <p>Game Duration: <span id="game-timer">0:00</span></p>
+    </div>
+    <button id="end-game">End Game</button>
+    <p id="end-game-message"></p>
+  </div>
+  <div id="stats-section">
+    <h2>Game statistics</h2>
+    <table id="stats-table">
+      <thead>
+      <tr>
+        <th>Player</th>
+        <th>Victories</th>
+      </tr>
+      </thead>
+      <tbody id="stats-body">
+      <!-- Rows will be dynamically added here -->
+      </tbody>
+    </table>
+  </div>
+  <script src="script.js" defer></script>
+</body>
+</html>

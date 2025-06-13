@@ -1,0 +1,5 @@
+- Vaata Java sisseehitatud logisid
+- kas teha igale classile oma logi või teha üldisem logi, mis võtab classi parameetrina sisse.
+- Kas/kuhu logisid salvestada? Võib teha logifaili; võib teha igale classile oma logifaili? või ei salvesta üldse ja
+prindid otse konsoolile?
+-
