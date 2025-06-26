@@ -185,6 +185,9 @@ public class GameRepositoryImpl implements GameRepository {
                              ") winners ON player.id = winners.winnerId\n" +
                              "GROUP BY player.name;")) {
 
+             // TODO: Siin ma püüan muuta query ära TEAM põhiseks.
+             // PreparedStatement selectStmt = conn.prepareStatement("") {
+
             ResultSet rs = selectStmt.executeQuery();  // ResultSet contains both playerName and victories columns
 
             while (rs.next()) {

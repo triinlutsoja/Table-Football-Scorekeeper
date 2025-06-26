@@ -122,6 +122,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
             // Delete the existing player
             try (PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM player WHERE id = ?")) {
+
                 deleteStmt.setLong(1, id); // Set parameters for the DELETE statement
                 int rowsAffected = deleteStmt.executeUpdate(); // Execute the DELETE statement
                 return rowsAffected > 0;  // if returns true, deletion succeeded. If false, the id didn't exist.
