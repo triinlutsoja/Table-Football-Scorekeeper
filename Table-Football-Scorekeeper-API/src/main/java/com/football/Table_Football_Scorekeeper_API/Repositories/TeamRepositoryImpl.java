@@ -92,7 +92,7 @@ public class TeamRepositoryImpl implements TeamRepository {
                 Team retrievedTeam = new Team();
                 retrievedTeam.setId(rs.getLong("id"));
                 retrievedTeam.setPlayer1Id(rs.getLong("player1Id"));
-                retrievedTeam.setPlayer2Id(rs.getLong("player2Id"));
+                retrievedTeam.setPlayer2Id(rs.getObject("player2Id", Long.class));  // player2Id is nullable in DB, so use getObject
                 teams.add(retrievedTeam);
             }
 

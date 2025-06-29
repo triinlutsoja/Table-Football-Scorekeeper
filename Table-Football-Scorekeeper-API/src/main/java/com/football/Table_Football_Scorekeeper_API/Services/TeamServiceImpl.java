@@ -30,12 +30,14 @@ public class TeamServiceImpl implements TeamService {
         // Players' IDs can't both be null
         if (team.getPlayer1Id() == null && team.getPlayer2Id() == null) {
             throw new ValidationException("TeamService: Players' IDs can't both be null, a team should have at least " +
-                    "one player.");
+                    "one player for a singles game and two players for doubles game.");
         }
 
         // In the case of a singles game, player1 can't be null
         if (team.getPlayer1Id() == null) {
-            throw new ValidationException("TeamService: Player1 cannot be null, a team should have at least one player.");
+            throw new ValidationException("TeamService: Player1 can never be null, a team should always have at least" +
+                    " one " +
+                    "player (singles game).");
         }
 
         //  Players' IDs must already exist in the player table
@@ -60,9 +62,25 @@ public class TeamServiceImpl implements TeamService {
 
         // Don't allow creating duplicate teams (even if player1 and player2 are reversed)
         List<Team> teams = teamRepository.getAllTeams();
-        for (Team t : teams) {
-            if (team.getPlayer1Id() != null && team.getPlayer2Id() != null) {
-                if ((t.getPlayer1Id().equals(team.getPlayer1Id()) || t.getPlayer1Id().equals(team.getPlayer2Id())) && (t.getPlayer2Id().equals(team.getPlayer1Id()) || t.getPlayer2Id().equals(team.getPlayer2Id()))) {
+
+        // Check for singles game
+        if (team.getPlayer2Id() == null) {
+            for (Team t : teams) {
+                System.out.println("Comparing against team: " + t.getPlayer1Id() + " & " + t.getPlayer2Id());
+                System.out.println("New team: " + team.getPlayer1Id() + " & " + team.getPlayer2Id());
+                if (Objects.equals(t.getPlayer1Id(), team.getPlayer1Id()) && t.getPlayer2Id() == null) {
+                    System.out.println("Match found");
+                    throw new ValidationException("TeamService: Singles team with this player already exists.");
+                }
+            }
+        }
+
+        // Check for doubles game
+        if (team.getPlayer1Id() != null && team.getPlayer2Id() != null) {
+            for (Team t : teams) {
+                if ((Objects.equals(t.getPlayer1Id(), team.getPlayer1Id()) || Objects.equals(t.getPlayer1Id(),
+                        team.getPlayer2Id())) && (Objects.equals(t.getPlayer2Id(), team.getPlayer1Id()) || Objects.equals(t.getPlayer2Id(),
+                        team.getPlayer2Id()))) {
                     throw new ValidationException("TeamService: Team already exists with these specific players.");
                 }
             }
