@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/teams")
-@CrossOrigin(origins = "http://localhost:5500")  // for frontend
 public class TeamController {
 
     private final TeamService teamService;

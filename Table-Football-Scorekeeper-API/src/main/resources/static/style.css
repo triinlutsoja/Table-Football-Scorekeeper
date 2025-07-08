@@ -28,12 +28,12 @@ h1 {
   border: 2px solid #ddd;
 }
 
-#player-grey {
+#player-grey, #player2-grey {
   background-color: #d3d3d3;
 }
 
-#player-black {
-  background-color: #000;
+#player-black, #player2-black {
+  background-color: #000000;
   color: #fff;
 }
 
