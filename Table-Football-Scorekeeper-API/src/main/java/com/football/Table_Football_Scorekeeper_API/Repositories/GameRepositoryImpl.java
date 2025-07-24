@@ -172,21 +172,18 @@ public class GameRepositoryImpl implements GameRepository {
         // automatically
         try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
              PreparedStatement selectStmt =
-                     conn.prepareStatement("SELECT player.name AS playerName, COUNT(*) AS victories\n" +
-                             "FROM player\n" +
-                             "JOIN (\n" +
-                             "    SELECT \n" +
-                             "        CASE \n" +
-                             "            WHEN scoreGrey > scoreBlack THEN greyId\n" +
-                             "            WHEN scoreBlack > scoreGrey THEN blackId\n" +
-                             "            ELSE NULL\n" +
-                             "        END AS winnerId\n" +
-                             "    FROM game\n" +
-                             ") winners ON player.id = winners.winnerId\n" +
-                             "GROUP BY player.name;")) {
-
-             // TODO: Siin ma püüan muuta query ära TEAM põhiseks.
-             // PreparedStatement selectStmt = conn.prepareStatement("") {
+                     conn.prepareStatement("SELECT player.name AS playerName, COUNT(*) AS victoryCount\n" +
+                             "FROM game\n" +
+                             "JOIN team ON (\n" +
+                             "    (game.scoreGrey = 8 AND game.greyId = team.id)\n" +
+                             "    OR\n" +
+                             "    (game.scoreBlack = 8 AND game.blackId = team.id)\n" +
+                             ")\n" +
+                             "JOIN player ON (\n" +
+                             "    player.id = team.player1Id OR player.id = team.player2Id\n" +
+                             ")\n" +
+                             "GROUP BY player.id, player.name\n" +
+                             "ORDER BY victoryCount DESC;")) {
 
             ResultSet rs = selectStmt.executeQuery();  // ResultSet contains both playerName and victories columns
 
@@ -194,7 +191,7 @@ public class GameRepositoryImpl implements GameRepository {
                 // Create a PlayerStat object from the result set
                 PlayerStat retrievedPlayerStat = new PlayerStat();
                 retrievedPlayerStat.setPlayerName(rs.getString("playerName"));
-                retrievedPlayerStat.setVictoryCount(rs.getInt("victories"));
+                retrievedPlayerStat.setVictoryCount(rs.getInt("victoryCount"));
                 winnerStats.add(retrievedPlayerStat);
             }
         } catch (SQLException e) {
