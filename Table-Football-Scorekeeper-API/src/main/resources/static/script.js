@@ -9,6 +9,27 @@ let blackScore = 0;
 let startTime;
 let timerInterval;
 
+// Control view switching
+function showView(viewId) {
+  document.querySelectorAll('.view').forEach(view => {
+    view.classList.remove('active');
+  });
+  document.getElementById(viewId).classList.add('active');
+}
+
+document.getElementById('nav-game').addEventListener('click', () => {
+  showView('view-game');
+});
+
+document.getElementById('nav-players').addEventListener('click', () => {
+  showView('view-players');
+});
+
+document.getElementById('nav-stats').addEventListener('click', () => {
+  showView('view-stats');
+});
+
+
 // Handle form submission for adding a player
 document.getElementById("add-player-form").addEventListener("submit", async (e) => {
   e.preventDefault(); // Prevent the form from refreshing the page
