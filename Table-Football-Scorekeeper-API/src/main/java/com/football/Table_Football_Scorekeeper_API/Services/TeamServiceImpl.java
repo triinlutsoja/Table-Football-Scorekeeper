@@ -67,10 +67,11 @@ public class TeamServiceImpl implements TeamService {
         if (team.getPlayer2Id() == null) {
             for (Team t : teams) {
                 System.out.println("Comparing against team: " + t.getPlayer1Id() + " & " + t.getPlayer2Id());
-                System.out.println("New team: " + team.getPlayer1Id() + " & " + team.getPlayer2Id());
+                System.out.println("New team: " + team.getPlayer1Id() + " & " + team.getPlayer2Id()); // TODO: ifplayer2 is null, no point here
                 if (Objects.equals(t.getPlayer1Id(), team.getPlayer1Id()) && t.getPlayer2Id() == null) {
                     System.out.println("Match found");
-                    throw new ValidationException("TeamService: Singles team with this player already exists.");
+                    throw new ValidationException("TeamService: Singles team with this player already exists."); //
+                    // TODO: If team exists, use it, instead of complaining
                 }
             }
         }

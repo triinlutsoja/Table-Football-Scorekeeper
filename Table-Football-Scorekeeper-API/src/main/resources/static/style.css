@@ -77,13 +77,39 @@ p {
   width: 250px; /* Optional: make input wider */
 }
 
+.teams-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.team-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .player-box {
   display: inline-block;
-  width: 40%;
+  width: 100%;
+  min-height: 80px;
+  box-sizing: border-box;
   padding: 10px;
   margin: 10px;
   border: none;
   border-radius: 8px;
+}
+
+.score-controls {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  margin-top: 10px;
+}
+
+.score-controls span {
+  font-size: 32px;
+  margin-right: 12px;
 }
 
 #player-grey, #player2-grey {
@@ -101,7 +127,7 @@ select {
   cursor: pointer;
 }
 
-#scoreboard, #end-game-message {
+.score-controls, #end-game-message {
   margin: 20px;
   font-size: 16px;
   font-weight: bold;
@@ -166,4 +192,19 @@ button {
   box-shadow: none;
   cursor: pointer;
   border-radius: 8px; 
+}
+
+.score-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.score-buttons button {
+  padding: 2px 4px;
+  margin: 2px 0;
+  font-size: 10px;
+  background-color: #04af54;
+  color: white;
+  border-radius: 4px;
 }

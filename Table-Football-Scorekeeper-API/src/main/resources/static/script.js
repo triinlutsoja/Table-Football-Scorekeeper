@@ -115,7 +115,7 @@ function populatePlayerDropdown(dropdownId, players) {
 // Validate teams before any backend requests
 const validateTeams = () => {
   grey = Number(document.getElementById("grey-player-select").value) || null;
-  grey2 = Number(document.getElementById("grey-player2-select").value || null);
+  grey2 = Number(document.getElementById("grey-player2-select").value) || null;
   black = Number(document.getElementById("black-player-select").value) || null;
   black2 = Number(document.getElementById("black-player2-select").value) || null;
 
@@ -150,13 +150,28 @@ const stopGameTimer = () => {
 };
 
 // Handle scoring
-document.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowLeft") {
-    greyScore = Math.min(8, greyScore + 1);
-  } else if (e.key === "ArrowRight") {
-    blackScore = Math.min(8, blackScore + 1);
-  }
-  updateScore();
+document.querySelectorAll(".score-up").forEach(button => {
+  button.addEventListener("click", () => {
+    const team = button.dataset.team;
+    if (team === "grey") {
+      greyScore = Math.min(8, greyScore +1);
+    } else if (team === "black") {
+      blackScore = Math.min(8, blackScore +1);
+    }
+    updateScore();
+  })
+});
+
+document.querySelectorAll(".score-down").forEach(button => {
+  button.addEventListener("click", () => {
+    const team = button.dataset.team;
+    if (team === "grey") {
+      greyScore = Math.max(0, greyScore - 1);
+    } else if (team === "black") {
+      blackScore = Math.max(0, blackScore - 1);
+    }
+    updateScore();
+  })
 });
 
 // Update scoreboard
