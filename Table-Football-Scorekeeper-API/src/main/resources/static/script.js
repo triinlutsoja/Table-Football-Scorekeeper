@@ -38,7 +38,7 @@ document.getElementById("add-player-form").addEventListener("submit", async (e) 
 
   // Display error message if no name is entered
   if (!playerName) {
-    displayMessage2("Please enter a player name.", "error");
+    displayMessage("add-player-message", "Please enter a player name.", "error");
     return;
   }
 
@@ -58,14 +58,14 @@ document.getElementById("add-player-form").addEventListener("submit", async (e) 
 
     // Clear the input field and display success message
     document.getElementById("new-player-name").value = "";
-    displayMessage2(`Player added successfully: ${newPlayer.name}`, "success");
+    displayMessage("add-player-message", `Player added successfully: ${newPlayer.name}`, "success");
 
     // Refresh player list
     fetchPlayers();
 
   } catch (error) {
     console.error("Error adding player:", error);
-    displayMessage2("Failed to add player. Please try again.", "error");
+    displayMessage("add-player-message", "Failed to add player. Please try again.", "error");
   }
 });
 
@@ -205,20 +205,20 @@ const endGame = () => {
         return res.json();
       })
       .then((data) => {
-      displayMessage(
+      displayMessage("end-game-message", 
       `Game Over! Grey: ${greyScore}, Black: ${blackScore}. Game saved successfully!`, "success"
       );
       resetGame();  // Reset scores and dropdowns
       })
       .catch((err) => {
         console.error("Error saving game:", err);
-        displayMessage("Failed to save game. Please try again.", "error");
+        displayMessage("end-game-message", "Failed to save game. Please try again.", "error");
       });
 };
 
-// Function to display a message under the "Add" button
-const displayMessage2 = (message, type) => {
-  const messageElement = document.getElementById("add-player-message");
+// Function to display a message based on given location
+const displayMessage = (displayLocation, message, type) => {
+  const messageElement = document.getElementById(displayLocation);
 
   if (type === "success") {
     messageElement.style.color = "green";
@@ -227,34 +227,9 @@ const displayMessage2 = (message, type) => {
   }
 
   messageElement.textContent = message;
-};
-
-// Function to display a message under the "Start game" button
-const displayMessage3 = (message, type) => {
-  const messageElement = document.getElementById("start-game-error-message");
-
-  if (type === "success") {
-    messageElement.style.color = "green";
-  } else if (type === "info") {
-    messageElement.style.color = "grey";
-  } else if (type === "error") {
-    messageElement.style.color = "red";
-  }
-
-  messageElement.textContent = message;
-};
-
-// Function to display a message under the "End Game" button
-const displayMessage = (message, type) => {
-  const messageElement = document.getElementById("end-game-message");
-
-  if (type === "success") {
-    messageElement.style.color = "green";
-  } else if (type === "error") {
-    messageElement.style.color = "red";
-  }
-
-  messageElement.textContent = message;
+  setTimeout(() => {
+    messageElement.style.display = "none";
+  }, 7000);
 };
 
 // Function to reset the game
@@ -387,13 +362,19 @@ document.addEventListener('DOMContentLoaded', function () {
         blackId = await findTeamIdByPlayers(black, black2);
       }
       startGameTimer();  // Starts, if no errors caught with the catch blocks
+      
+      document.getElementById("start-game-button").disabled = true;  // Disable start button after starting
     }
   });
   
-
+  document.getElementById("reset-game-button").addEventListener("click", () => {
+    location.reload(); // reloads the page, resets everything
+  });
 
   // Add event listener to end the game
   document.getElementById("end-game").addEventListener("click", () => {
       endGame(); // End the game when the button is clicked
-    });
+
+      document.getElementById("start-game-button").disabled = false;  // Enable start button after ending
+  });
 });
