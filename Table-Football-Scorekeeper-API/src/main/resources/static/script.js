@@ -219,6 +219,7 @@ const endGame = () => {
 // Function to display a message based on given location
 const displayMessage = (displayLocation, message, type) => {
   const messageElement = document.getElementById(displayLocation);
+  messageElement.style.display = "block";  // unhide
 
   if (type === "success") {
     messageElement.style.color = "green";
@@ -228,7 +229,7 @@ const displayMessage = (displayLocation, message, type) => {
 
   messageElement.textContent = message;
   setTimeout(() => {
-    messageElement.style.display = "none";
+    messageElement.style.display = "none";  // hide after 7 seconds
   }, 7000);
 };
 

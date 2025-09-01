@@ -73,6 +73,14 @@ public class PlayerServiceImpl implements PlayerService {
         if (player.getName() == null || player.getName().isEmpty()) {
             throw new ValidationException("PlayerService: Player name cannot be null or empty.");
         }
+        // Validate that the player's name is unique
+        List<Player> players = getAllPlayers();
+        for (Player p : players) {
+            if (p.getName().equalsIgnoreCase(player.getName())) {
+                throw new ValidationException("PlayerService: A player with this exact name already exists. Pick a " +
+                        "unique name!");
+            }
+        }
         return true;
     }
 }
