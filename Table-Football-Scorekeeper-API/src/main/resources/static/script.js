@@ -29,6 +29,46 @@ document.getElementById('nav-stats').addEventListener('click', () => {
   showView('view-stats');
 });
 
+function renderStats(data) {
+  const statsBody = document.getElementById('stats-body');
+  statsBody.innerHTML = '';
+
+  // Loop through each player and display their victories
+  data.forEach(player => {
+    console.log("Adding player to table:", player); // Log each player object
+
+    const row = document.createElement('tr'); // Create a new table row
+
+    // Create and append the player name cell
+    const playerNameCell = document.createElement('td');
+    playerNameCell.textContent = player.playerName;
+    console.log("Player name cell:", player.playerName); // Log the player name
+    row.appendChild(playerNameCell);
+
+    // Create and append the victories cell
+    const victoriesCell = document.createElement('td');
+    victoriesCell.textContent = `${player.victoryCount}`; // Force victories to render as a string
+    console.log("Victories cell:", player.victoryCount); // Log the victories count
+    row.appendChild(victoriesCell);
+
+    // Append the row to the table body
+    statsBody.appendChild(row);
+  });
+}
+
+function setUpStatsTable() {
+  fetch('http://localhost:8080/stats')
+    .then(response => {
+      console.log("Fetching stats...");
+      return response.json();
+    })
+    .then(data => {
+      renderStats(data);
+    })
+    .catch(error => {
+      console.error('Error fetching stats:', error);
+    });
+}
 
 // Handle form submission for adding a player
 document.getElementById("add-player-form").addEventListener("submit", async (e) => {
@@ -209,6 +249,7 @@ const endGame = () => {
       `Game Over! Grey: ${greyScore}, Black: ${blackScore}. Game saved successfully!`, "success"
       );
       resetGame();  // Reset scores and dropdowns
+      setUpStatsTable();
       })
       .catch((err) => {
         console.error("Error saving game:", err);
@@ -278,44 +319,8 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener('DOMContentLoaded', function () {
   console.log("JavaScript is running!");
 
-  // Fetch the data from the backend API
-  fetch('http://localhost:8080/stats')
-      .then(response => {
-        console.log("Fetching stats...");
-        return response.json();
-      })
-      .then(data => {
-        console.log(data); // Log the data received
-
-        // Clear existing table rows
-        const statsBody = document.getElementById('stats-body');
-        statsBody.innerHTML = '';
-
-        // Loop through each player and display their victories
-        data.forEach(player => {
-          console.log("Adding player to table:", player); // Log each player object
-
-          const row = document.createElement('tr'); // Create a new table row
-
-          // Create and append the player name cell
-          const playerNameCell = document.createElement('td');
-          playerNameCell.textContent = player.playerName;
-          console.log("Player name cell:", player.playerName); // Log the player name
-          row.appendChild(playerNameCell);
-
-          // Create and append the victories cell
-          const victoriesCell = document.createElement('td');
-          victoriesCell.textContent = `${player.victoryCount}`; // Force victories to render as a string
-          console.log("Victories cell:", player.victoryCount); // Log the victories count
-          row.appendChild(victoriesCell);
-
-          // Append the row to the table body
-          statsBody.appendChild(row);
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching stats:', error);
-      });
+  // Fetch the stats data from the backend API
+  setUpStatsTable();
 
   // Add event listener to start the game
   document.getElementById("start-game-button").addEventListener("click", async () => {
@@ -367,15 +372,16 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById("start-game-button").disabled = true;  // Disable start button after starting
     }
   });
-  
-  document.getElementById("reset-game-button").addEventListener("click", () => {
+});
+
+// Event listener to reset the game
+document.getElementById("reset-game-button").addEventListener("click", () => {
     location.reload(); // reloads the page, resets everything
   });
 
-  // Add event listener to end the game
-  document.getElementById("end-game").addEventListener("click", () => {
-      endGame(); // End the game when the button is clicked
+// Event listener to end the game
+document.getElementById("end-game").addEventListener("click", () => {
+    endGame(); // End the game when the button is clicked
 
-      document.getElementById("start-game-button").disabled = false;  // Enable start button after ending
-  });
+    document.getElementById("start-game-button").disabled = false;  // Enable start button after ending
 });
