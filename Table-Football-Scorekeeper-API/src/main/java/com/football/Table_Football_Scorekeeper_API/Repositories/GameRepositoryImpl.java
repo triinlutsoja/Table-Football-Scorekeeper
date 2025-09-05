@@ -4,31 +4,28 @@ import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Entities.Game;
 import com.football.Table_Football_Scorekeeper_API.Entities.PlayerStat;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.DatabaseException;
-import com.football.Table_Football_Scorekeeper_API.Profile;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 @Repository
 public class GameRepositoryImpl implements GameRepository {
 
-    private final DatabaseConnection db;
-    Properties props = Profile.getProperties("db");
+    private final DataSource dataSource;
 
-    public GameRepositoryImpl() {
-        // fetch a single instance of the DatabaseConnection class (Singleton Pattern)
-        db = DatabaseConnection.instance(); // one AND only instance of the db connection
+    public GameRepositoryImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public Game addGame(Game game) {
 
         // Get connection, execute action, add game to the database
-        try (Connection conn = db.connect(props);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO game (greyId, blackId, scoreGrey, " +
                         "scoreBlack) VALUES(?,?,?,?)",
                 PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -69,7 +66,7 @@ public class GameRepositoryImpl implements GameRepository {
     public Optional<Game> getGame(Long id) {
 
         // Get connection, execute query, get game from the database. Try-with-resources closes stuff automatically
-        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game WHERE id = ?")) {
 
             selectStmt.setLong(1, id); // Set the ID parameter in the query
@@ -98,7 +95,7 @@ public class GameRepositoryImpl implements GameRepository {
         List<Game> games = new ArrayList<>();
 
         // Get connection, execute query, get all games from the database. Try-with-resources closes stuff automatically
-        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM game")) {
 
             ResultSet rs = selectStmt.executeQuery();
@@ -124,7 +121,7 @@ public class GameRepositoryImpl implements GameRepository {
     public Game updateGame(Long id, Game game) {
 
         // Get connection, execute query, update. Try-with-resources closes stuff automatically
-        try (Connection conn = db.connect(props)) {  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = dataSource.getConnection()) {
 
             // Attempt to update the game
             try (PreparedStatement updateStmt =
@@ -152,7 +149,7 @@ public class GameRepositoryImpl implements GameRepository {
     public boolean deleteGame(Long id) {
 
         // Get connection, execute query, delete. Try-with-resources closes stuff automatically
-        try (Connection conn = db.connect(props)) {
+        try (Connection conn = dataSource.getConnection()) {
 
             // Delete the existing game
             try (PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM game WHERE id=?")){
@@ -170,7 +167,7 @@ public class GameRepositoryImpl implements GameRepository {
 
         // Get connection, execute query, get all game stats from the database. Try-with-resources closes stuff
         // automatically
-        try (Connection conn = db.connect(props);  // fetching the existing connection from DatabaseConnection
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement selectStmt =
                      conn.prepareStatement("SELECT player.name AS playerName, COUNT(*) AS victoryCount\n" +
                              "FROM game\n" +

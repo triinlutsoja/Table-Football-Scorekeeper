@@ -3,31 +3,28 @@ package com.football.Table_Football_Scorekeeper_API.Repositories;
 import com.football.Table_Football_Scorekeeper_API.DatabaseConnection;
 import com.football.Table_Football_Scorekeeper_API.Entities.Team;
 import com.football.Table_Football_Scorekeeper_API.Exceptions.DatabaseException;
-import com.football.Table_Football_Scorekeeper_API.Profile;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 @Repository
 public class TeamRepositoryImpl implements TeamRepository {
 
-    private final DatabaseConnection db;
-    Properties props = Profile.getProperties("db");
+    private final DataSource dataSource;
 
-    public TeamRepositoryImpl(){
-        // fetch a single instance of the DatabaseConnection class (Singleton Pattern)
-        db = DatabaseConnection.instance(); // one AND only instance of the db connection
+    public TeamRepositoryImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public Team addTeam(Team team) {
 
         // Get connection, execute action, add team to the database
-        try (Connection conn = db.connect(props);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement insertStmt = conn.prepareStatement("INSERT INTO team (player1Id, player2Id) VALUES(?,?)",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -58,7 +55,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     public Optional<Team> getTeam(Long id) {
 
         // Get connection, execute action, get team from the database
-        try (Connection conn = db.connect(props);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM team WHERE id=?")) {
 
             selectStmt.setLong(1, id);
@@ -68,7 +65,12 @@ public class TeamRepositoryImpl implements TeamRepository {
                 Team retrievedTeam = new Team();
                 retrievedTeam.setId(rs.getLong("id"));
                 retrievedTeam.setPlayer1Id(rs.getLong("player1Id"));
-                retrievedTeam.setPlayer2Id(rs.getLong("player2Id"));
+                long player2Val = rs.getLong("player2Id");
+                if (rs.wasNull()) {
+                    retrievedTeam.setPlayer2Id(null);
+                } else {
+                    retrievedTeam.setPlayer2Id(player2Val);
+                }
                 return Optional.of(retrievedTeam);
             }
             return Optional.empty();
@@ -83,7 +85,7 @@ public class TeamRepositoryImpl implements TeamRepository {
         List<Team> teams = new ArrayList<>();
 
         // Get connection, execute action, get all teams from the database
-        try (Connection conn = db.connect(props);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement selectStmt = conn.prepareStatement("SELECT * FROM team")) {
 
             ResultSet rs = selectStmt.executeQuery();
@@ -92,7 +94,12 @@ public class TeamRepositoryImpl implements TeamRepository {
                 Team retrievedTeam = new Team();
                 retrievedTeam.setId(rs.getLong("id"));
                 retrievedTeam.setPlayer1Id(rs.getLong("player1Id"));
-                retrievedTeam.setPlayer2Id(rs.getObject("player2Id", Long.class));  // player2Id is nullable in DB, so use getObject
+                long player2Val = rs.getLong("player2Id");
+                if (rs.wasNull()) {
+                    retrievedTeam.setPlayer2Id(null);
+                } else {
+                    retrievedTeam.setPlayer2Id(player2Val);
+                }
                 teams.add(retrievedTeam);
             }
 
@@ -107,7 +114,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     public Team updateTeam(Long id, Team team) {
 
         // Get connection, execute action, update team
-        try (Connection conn = db.connect(props);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement updateStmt = conn.prepareStatement("UPDATE team SET player1Id=?, player2Id=? WHERE id=?",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -132,7 +139,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     public boolean deleteTeam(Long id) {
 
         // Get connection, execute action, add game to the database
-        try (Connection conn = db.connect(props);
+        try (Connection conn = dataSource.getConnection();
              PreparedStatement deleteStmt = conn.prepareStatement("DELETE FROM team WHERE id=?",
                      PreparedStatement.RETURN_GENERATED_KEYS)) {
 
