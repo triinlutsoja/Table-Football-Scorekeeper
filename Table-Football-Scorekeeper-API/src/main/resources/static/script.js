@@ -8,6 +8,7 @@ let greyScore = 0;
 let blackScore = 0;
 let startTime;
 let timerInterval;
+const scoreButtons = document.querySelectorAll(".score-up, .score-down");
 
 // Control view switching
 function showView(viewId) {
@@ -324,6 +325,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Add event listener to start the game
   document.getElementById("start-game-button").addEventListener("click", async () => {
+
+    scoreButtons.forEach(btn => btn.disabled = false);
     
     if (validateTeams()) {
     
@@ -383,5 +386,6 @@ document.getElementById("reset-game-button").addEventListener("click", () => {
 document.getElementById("end-game").addEventListener("click", () => {
     endGame(); // End the game when the button is clicked
 
+    scoreButtons.forEach(btn => btn.disabled = true);
     document.getElementById("start-game-button").disabled = false;  // Enable start button after ending
 });

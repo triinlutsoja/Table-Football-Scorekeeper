@@ -68,7 +68,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("ID of the grey player cannot be null or less than or equal to zero.", thrown.getMessage());  //
+        assertEquals("ID of the grey team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
 
@@ -88,7 +88,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("ID of the grey player cannot be null or less than or equal to zero.", thrown.getMessage());  //
+        assertEquals("ID of the grey team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
 
@@ -108,7 +108,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("ID of the grey player cannot be null or less than or equal to zero.", thrown.getMessage());  //
+        assertEquals("ID of the grey team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
 
@@ -128,7 +128,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("ID of the black player cannot be null or less than or equal to zero.", thrown.getMessage());  //
+        assertEquals("ID of the black team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
 
@@ -148,7 +148,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("ID of the black player cannot be null or less than or equal to zero.", thrown.getMessage());  //
+        assertEquals("ID of the black team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
 
@@ -168,12 +168,12 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("ID of the black player cannot be null or less than or equal to zero.", thrown.getMessage());  //
+        assertEquals("ID of the black team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
 
     @Test
-    void addGame_ShouldReturnValidationException_WhenPlayerTriesToPlayAgainstSelf() {
+    void addGame_ShouldReturnValidationException_WhenTeamTriesToPlayAgainstSelf() {
         // Arrange
         Game invalidGame = new Game(1L, 8, 4, 1L);
 
@@ -188,7 +188,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("Players can't play against themselves.", thrown.getMessage());  // Messages should match
+        assertEquals("Teams can't play against themselves.", thrown.getMessage());  // Messages should match
     }
 
     @Test
@@ -207,7 +207,8 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("Score of the grey player cannot be less than zero or more than 8.", thrown.getMessage());  // Messages should match
+        assertEquals("Score of the grey team cannot be less than zero or more than 8.", thrown.getMessage());  //
+        // Messages should match
     }
 
     @Test
@@ -226,7 +227,8 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("Score of the grey player cannot be less than zero or more than 8.", thrown.getMessage());  // Messages should match
+        assertEquals("Score of the grey team cannot be less than zero or more than 8.", thrown.getMessage());  //
+        // Messages should match
     }
 
     @Test
@@ -245,7 +247,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("Score of the black player cannot be less than zero or more than 8.", thrown.getMessage());  //
+        assertEquals("Score of the black team cannot be less than zero or more than 8.", thrown.getMessage());  //
         // Messages should match
     }
 
@@ -265,7 +267,7 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("Score of the black player cannot be less than zero or more than 8.", thrown.getMessage());  //
+        assertEquals("Score of the black team cannot be less than zero or more than 8.", thrown.getMessage());  //
         // Messages should match
     }
 
@@ -285,7 +287,8 @@ class GameServiceImplTest {
         // Assert
         assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
         // display message
-        assertEquals("The game is not finished. One player must reach exactly 8 points, and the other must have fewer than 8.", thrown.getMessage());  //
+        assertEquals("The game is not finished. One team must reach exactly 8 points, and the other must have fewer " +
+                "than 8.", thrown.getMessage());  //
         // Messages should match
     }
 
