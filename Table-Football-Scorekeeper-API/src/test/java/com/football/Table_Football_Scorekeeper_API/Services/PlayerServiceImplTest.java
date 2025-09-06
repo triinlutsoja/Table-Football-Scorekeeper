@@ -8,7 +8,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,11 +96,12 @@ class PlayerServiceImplTest {
         Long playerId = 1L;  // This belongs to the player named John Doe
 
         // Act
-        Optional<Player> retrievedPlayer = playerService.getPlayer(playerId);
+        Player retrievedPlayer = playerService.getPlayer(playerId);
 
         // Assert
-        assertTrue(retrievedPlayer.isPresent());
-        assertEquals("John Doe", retrievedPlayer.get().getName());
+        assertNotNull(retrievedPlayer, "Player should not be null.");
+        assertEquals("John Doe", retrievedPlayer.getName(), "Player name should match");
+        assertEquals(playerId, retrievedPlayer.getId(), "Player ID should match");
     }
 
     @Test

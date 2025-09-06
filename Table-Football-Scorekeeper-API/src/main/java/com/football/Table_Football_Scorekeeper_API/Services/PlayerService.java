@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface PlayerService {
 
     Player addPlayer(Player player);
-    Optional<Player> getPlayer(Long id);
+    Player getPlayer(Long id);
     List<Player> getAllPlayers();
     Player updatePlayer(Long id, Player player);
     boolean deletePlayer(Long id);

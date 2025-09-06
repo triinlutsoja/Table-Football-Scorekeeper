@@ -19,9 +19,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
 
     @Override
     public Player addPlayer(Player player) {
-        if (player.getId() == null) {
-            player.setId(currentId++);
-        }
+        player.setId(currentId++);
         db.add(player);
         return player;
     }
@@ -46,7 +44,7 @@ public class InMemoryPlayerRepository implements PlayerRepository {
                 return p;
             }
         }
-        throw new EntityNotFoundException("The player you want to update does not exist.");
+        return null;
     }
 
     @Override

@@ -28,8 +28,8 @@ public class PlayerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
-        Optional<Player> existingPlayer = playerService.getPlayer(id);
-        return ResponseEntity.status(200).body(existingPlayer.get());
+        Player existingPlayer = playerService.getPlayer(id);
+        return ResponseEntity.status(200).body(existingPlayer);
     }
 
     @GetMapping

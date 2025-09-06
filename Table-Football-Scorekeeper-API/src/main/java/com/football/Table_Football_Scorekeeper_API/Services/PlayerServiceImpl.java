@@ -30,12 +30,9 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Optional<Player> getPlayer(Long id) {
-        Optional<Player> retrievedPlayer = playerRepository.getPlayer(id);
-        if (retrievedPlayer.isPresent()) {
-            return retrievedPlayer;
-        }
-        throw new EntityNotFoundException("PlayerService: Player with id " + id + " not found.");
+    public Player getPlayer(Long id) {
+        return playerRepository.getPlayer(id)
+                .orElseThrow(() -> new EntityNotFoundException("PlayerService: Player with id " + id + " not found."));
     }
 
     @Override
@@ -48,11 +45,10 @@ public class PlayerServiceImpl implements PlayerService {
         // Validate player
         validatePlayer(player);
 
-        // Validate that player exists to proceed with update
-        if (getPlayer(id).isPresent()) {
-            return playerRepository.updatePlayer(id, player);
-        }
-        throw new EntityNotFoundException("PlayerService: Player with id " + id + " not found.");
+        // Make sure player exists to proceed with update, will throw if not found
+        Player existingPlayer = getPlayer(id);
+
+        return playerRepository.updatePlayer(id, player);
     }
 
     @Override
