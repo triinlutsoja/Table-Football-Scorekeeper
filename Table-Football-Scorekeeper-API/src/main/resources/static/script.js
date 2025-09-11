@@ -284,6 +284,8 @@ const resetGame = () => {
   // Reset dropdown selections
   document.getElementById("grey-player-select").value = "";
   document.getElementById("black-player-select").value = "";
+  document.getElementById("grey-player2-select").value = "";
+  document.getElementById("black-player2-select").value = "";
 };
 
 // Function to get existing teams ID
