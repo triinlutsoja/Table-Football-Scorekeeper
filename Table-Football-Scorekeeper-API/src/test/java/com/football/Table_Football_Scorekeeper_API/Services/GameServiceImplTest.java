@@ -295,18 +295,18 @@ class GameServiceImplTest {
     @Test
     void getGame_ShouldReturnGameById_WhenGameExists() {
         // Arrange
-        Game game = new Game(1L, 8, 4, 2L);
-        Game savedGame = new Game(LocalDateTime.now(),2L, 1L, 8, 4);
-        savedGame.setId(100L);  // mock repository's behaviour of automatically adding an ID
+        Game existingGame = new Game(LocalDateTime.now(),2L, 1L, 8, 4);
+        existingGame.setId(100L);  // mock repository's behaviour of automatically adding an ID
 
-        when(gameRepository.getGame(100L)).thenReturn(Optional.of(savedGame));  // Mock repository getGame behavior
+        when(gameRepository.getGame(existingGame.getId())).thenReturn(Optional.of(existingGame));  // Mock repository getGame
+        // behavior
 
         // Act
-        Optional<Game> retrievedGame = gameService.getGame(100L);
+        Optional<Game> retrievedGame = gameService.getGame(existingGame.getId());
 
         // Assert
         assertTrue(retrievedGame.isPresent());
-        assertEquals(savedGame, retrievedGame.get());
+        assertEquals(existingGame, retrievedGame.get());
     }
 
     @Test
@@ -351,6 +351,8 @@ class GameServiceImplTest {
 
         // Assert
         assertEquals(2, retrievedGames.size());
+        assertEquals(1L, retrievedGames.get(0).getId());
+        assertEquals(2L, retrievedGames.get(1).getId());
     }
 
     @Test
@@ -362,8 +364,9 @@ class GameServiceImplTest {
         Game updatedGame = new Game(LocalDateTime.now(),2L, 1L, 4, 8);
         updatedGame.setId(1L);
 
-        when(gameRepository.getGame(1L)).thenReturn(Optional.of(existingGame));  // Mock repository behaviour
-        when(gameRepository.updateGame(1L, updatedGame)).thenReturn(updatedGame);  // Mock repository behaviour
+        when(gameRepository.getGame(existingGame.getId())).thenReturn(Optional.of(existingGame));  // Mock repository
+        // behaviour
+        when(gameRepository.updateGame(existingGame.getId(), updatedGame)).thenReturn(updatedGame);  // Mock repository behaviour
 
         // Act
         Game retrievedGame = gameService.updateGame(1L, updatedGame);
