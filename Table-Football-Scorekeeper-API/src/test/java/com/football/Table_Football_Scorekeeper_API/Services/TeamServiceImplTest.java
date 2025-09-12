@@ -89,16 +89,12 @@ public class TeamServiceImplTest {
         //Arrange
         Team invalidTeam = new Team(null, null);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            teamService.addTeam(invalidTeam);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected ValidationException but none was thrown.");
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> teamService.addTeam(invalidTeam),
+                "Expected ValidationException but none was thrown."
+        );
         assertEquals("TeamService: Players' IDs can't both be null, a team should have at least " +
                 "one player for a singles game and two players for doubles game.", thrown.getMessage());
     }
@@ -111,16 +107,12 @@ public class TeamServiceImplTest {
 
         Team invalidTeam = new Team(null, existingPlayer2.getId());
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            teamService.addTeam(invalidTeam);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected ValidationException but none was thrown.");
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> teamService.addTeam(invalidTeam),
+                "Expected ValidationException but none was thrown."
+        );
         assertEquals("TeamService: Player1 can never be null, a team should always have at least one player (singles game).", thrown.getMessage());
     }
 
@@ -138,16 +130,12 @@ public class TeamServiceImplTest {
         when(playerRepository.getPlayer(existingPlayer.getId())).thenReturn(Optional.of(existingPlayer));
         when(playerRepository.getPlayer(nonExistingPlayer.getId())).thenReturn(Optional.empty());
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            teamService.addTeam(invalidTeam);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected ValidationException but none was thrown.");
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> teamService.addTeam(invalidTeam),
+                "Expected ValidationException but none was thrown."
+        );
         assertEquals("TeamService: Player1 does not exist and was not found in the players table.", thrown.getMessage());
     }
 
@@ -165,16 +153,12 @@ public class TeamServiceImplTest {
         when(playerRepository.getPlayer(existingPlayer.getId())).thenReturn(Optional.of(existingPlayer));
         when(playerRepository.getPlayer(nonExistingPlayer.getId())).thenReturn(Optional.empty());
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            teamService.addTeam(invalidTeam);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected ValidationException but none was thrown.");
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> teamService.addTeam(invalidTeam),
+                "Expected ValidationException but none was thrown."
+        );
         assertEquals("TeamService: Player2 does not exist and was not found in the players table.",
                 thrown.getMessage());
     }
@@ -189,16 +173,12 @@ public class TeamServiceImplTest {
 
         when(playerRepository.getPlayer(existingPlayer.getId())).thenReturn(Optional.of(existingPlayer));
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            teamService.addTeam(invalidTeam);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected ValidationException but none was thrown.");
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> teamService.addTeam(invalidTeam),
+                "Expected ValidationException but none was thrown."
+        );
         assertEquals("TeamService: No self-pairing allowed, the players in the team cannot be the same player.",
                 thrown.getMessage());
     }
@@ -217,16 +197,12 @@ public class TeamServiceImplTest {
         when(playerRepository.getPlayer(existingPlayer1.getId())).thenReturn(Optional.of(existingPlayer1));
         when(teamRepository.getAllTeams()).thenReturn(teams);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            teamService.addTeam(invalidTeam);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected ValidationException but none was thrown.");
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> teamService.addTeam(invalidTeam),
+                "Expected ValidationException but none was thrown."
+        );
         assertEquals("TeamService: Singles team with this player already exists.",
                 thrown.getMessage());
     }
@@ -249,16 +225,12 @@ public class TeamServiceImplTest {
         when(playerRepository.getPlayer(existingPlayer2.getId())).thenReturn(Optional.of(existingPlayer2));
         when(teamRepository.getAllTeams()).thenReturn(teams);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            teamService.addTeam(invalidTeam);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected ValidationException but none was thrown.");
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> teamService.addTeam(invalidTeam),
+                "Expected ValidationException but none was thrown."
+        );
         assertEquals("TeamService: Team already exists with these specific players.",
                 thrown.getMessage());
     }
@@ -287,16 +259,12 @@ public class TeamServiceImplTest {
 
         when(teamRepository.getTeam(nonExistingTeam.getId())).thenReturn(Optional.empty());
 
-        // Act
-        EntityNotFoundException thrown = null;
-        try {
-            teamService.getTeam(nonExistingTeam.getId());
-        } catch (EntityNotFoundException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown.");
+        // Act + Assert
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () ->  teamService.getTeam(nonExistingTeam.getId()),
+                "Expected EntityNotFoundException but none was thrown."
+        );
         assertEquals("TeamService: Team with id " + nonExistingTeam.getId() + " not found.",
                 thrown.getMessage());
     }
@@ -382,16 +350,12 @@ public class TeamServiceImplTest {
         when(teamRepository.getAllTeams()).thenReturn(teams);
         when(teamRepository.getTeam(nonExistingTeam.getId())).thenReturn(Optional.empty());
 
-        // Act
-        EntityNotFoundException thrown = null;
-        try {
-            teamService.updateTeam(nonExistingTeam.getId(), updatedTeam);
-        } catch (EntityNotFoundException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown.");
+        // Act + Assert
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> teamService.updateTeam(nonExistingTeam.getId(), updatedTeam),
+                "Expected EntityNotFoundException but none was thrown."
+        );
         assertEquals("TeamService: Team with id " + nonExistingTeam.getId() + " not found.",
                 thrown.getMessage());
     }
@@ -417,16 +381,12 @@ public class TeamServiceImplTest {
 
         when(teamRepository.deleteTeam(teamId)).thenReturn(false);
 
-        // Act
-        EntityNotFoundException thrown = null;
-        try {
-            teamService.deleteTeam(teamId);
-        } catch (EntityNotFoundException e) {
-            thrown = e;
-        }
-
-        // Assert
-        Assertions.assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown.");
+        // Act + Assert
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> teamService.deleteTeam(teamId),
+                "Expected EntityNotFoundException but none was thrown."
+        );
         assertEquals("TeamService: Team with id " + teamId + " not found.",
                 thrown.getMessage());
     }

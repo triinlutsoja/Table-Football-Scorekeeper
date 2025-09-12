@@ -25,8 +25,13 @@ class PlayerServiceImplTest {
         playerService = new PlayerServiceImpl(playerRepository);
 
         // Add initial players for testing
-        playerRepository.addPlayer(new Player("John Doe"));
-        playerRepository.addPlayer(new Player("Jane Smith"));
+        Player player1 = new Player("John Doe");
+        player1.setId(1L);
+        Player player2 = new Player("Jane Smith");
+        player2.setId(2L);
+
+        playerRepository.addPlayer(player1);
+        playerRepository.addPlayer(player2);
     }
 
     @AfterEach
@@ -35,7 +40,7 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void addPlayer_ShouldAddNewPlayer() {  // TODO: camelCase? snake_case etc? Don't MIX! Stick to one.
+    void addPlayer_ShouldAddNewPlayer() {
         // Arrange
         Player newPlayer = new Player("Test Name");
 
@@ -54,18 +59,12 @@ class PlayerServiceImplTest {
         // Arrange
         Player newPlayer = new Player(null);
 
-        // Act
-        // TODO: Remove try-catch, because I can use assertThrows or similar
-        ValidationException thrown = null;
-        try {
-            playerService.addPlayer(newPlayer);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> playerService.addPlayer(newPlayer),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("PlayerService: Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
     }
 
@@ -75,17 +74,12 @@ class PlayerServiceImplTest {
         // Arrange
         Player newPlayer = new Player("");  // name is empty
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            playerService.addPlayer(newPlayer);
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> playerService.addPlayer(newPlayer),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("PlayerService: Player name cannot be null or empty.", thrown.getMessage());  // Messages should match
     }
 
@@ -109,19 +103,14 @@ class PlayerServiceImplTest {
         // Arrange
         Long playerId = 99L;
 
-        // Act
-        EntityNotFoundException thrown = null;
-        try {
-            playerService.getPlayer(playerId);
-        } catch (EntityNotFoundException e) {
-            thrown = e;
-        }
 
-        // Assert
-        assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown");  // if no exception gets thrown,
-        // display message
-        assertEquals("PlayerService: Player with id " + playerId + " not found.", thrown.getMessage());  // Messages
-        // should match
+        // Act + Assert
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> playerService.getPlayer(playerId),
+                "Expected EntityNotFoundException but none was thrown"
+        );
+        assertEquals("PlayerService: Player with id " + playerId + " not found.", thrown.getMessage());  // Messages should match
     }
 
     @Test
@@ -150,17 +139,18 @@ class PlayerServiceImplTest {
     @Test
     void deletePlayer_ShouldRemovePlayer_WhenPlayerExists() {  // Ensures a player is removed from the repository when they exist.
         // Arrange
-        // TODO: It's better to first add a player, then delete it and make sure that this specific player doesn't
-        //  exist anymore.
-        Long playerId = 1L;  // a player with this ID exists
+        Long playerId = 1L;  // a player John Doe with this ID exists
 
         // Act
         boolean isDeleted = playerService.deletePlayer(playerId);
 
         // Assert
-        assertTrue(isDeleted);
-        assertEquals(1, playerRepository.getAllPlayers().size());
-        // TODO: Make sure that John is deleted, and not Peter. Now you can't be sure, who got deleted.
+        assertTrue(isDeleted, "Expected John to be deleted.");
+        assertEquals(1, playerRepository.getAllPlayers().size(), "Only one player should remain.");
+        assertFalse(playerRepository.getAllPlayers().stream().anyMatch(p -> p.getId().equals(playerId)), "John " +
+                "should no longer exist in repository.");
+        assertTrue(playerRepository.getAllPlayers().stream().anyMatch(p -> p.getId().equals(2L)), "Jane Smith should " +
+                "still exist in repository.");
     }
 
     @Test

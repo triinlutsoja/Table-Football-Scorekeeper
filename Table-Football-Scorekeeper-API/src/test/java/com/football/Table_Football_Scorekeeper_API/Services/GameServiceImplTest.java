@@ -57,17 +57,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 8, 4, null);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("ID of the grey team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
@@ -77,17 +72,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 8, 4, -1L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("ID of the grey team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
@@ -97,17 +87,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 8, 4, 0L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("ID of the grey team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
@@ -117,17 +102,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(null, 8, 4, 1L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("ID of the black team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
@@ -137,17 +117,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(-1L, 8, 4, 1L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("ID of the black team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
@@ -157,17 +132,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(0L, 8, 4, 1L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("ID of the black team cannot be null or less than or equal to zero.", thrown.getMessage());  //
         // Messages should match
     }
@@ -177,17 +147,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 8, 4, 1L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () ->gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("Teams can't play against themselves.", thrown.getMessage());  // Messages should match
     }
 
@@ -196,17 +161,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, -1, 8, 2L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("Score of the grey team cannot be less than zero or more than 8.", thrown.getMessage());  //
         // Messages should match
     }
@@ -216,17 +176,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 9, 8, 2L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("Score of the grey team cannot be less than zero or more than 8.", thrown.getMessage());  //
         // Messages should match
     }
@@ -236,17 +191,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 7, -1, 2L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("Score of the black team cannot be less than zero or more than 8.", thrown.getMessage());  //
         // Messages should match
     }
@@ -256,17 +206,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 7, 9, 2L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("Score of the black team cannot be less than zero or more than 8.", thrown.getMessage());  //
         // Messages should match
     }
@@ -276,17 +221,12 @@ class GameServiceImplTest {
         // Arrange
         Game invalidGame = new Game(1L, 4, 5, 2L);
 
-        // Act
-        ValidationException thrown = null;
-        try {
-            gameService.addGame(invalidGame); // Method call that should throw an exception
-        } catch (ValidationException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected ValidationException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        ValidationException thrown = assertThrows(
+                ValidationException.class,
+                () -> gameService.addGame(invalidGame),
+                "Expected ValidationException but none was thrown"
+        );
         assertEquals("The game is not finished. One team must reach exactly 8 points, and the other must have fewer " +
                 "than 8.", thrown.getMessage());  //
         // Messages should match
@@ -316,17 +256,12 @@ class GameServiceImplTest {
 
         when(gameRepository.getGame(nonExistingGameId)).thenReturn(Optional.empty());  // Mock repository getGame behavior
 
-        // Act
-        EntityNotFoundException thrown = null;
-        try {
-            gameService.getGame(nonExistingGameId);
-        } catch (EntityNotFoundException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown");  // if no exception gets thrown,
-        // display message
+        // Act + Assert
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () -> gameService.getGame(nonExistingGameId),
+                "Expected EntityNotFoundException but none was thrown"
+        );
         assertEquals("GameService: Game with id " + nonExistingGameId + " not found.", thrown.getMessage());  //
         // Messages should match
     }
@@ -399,16 +334,12 @@ class GameServiceImplTest {
 
         when(gameRepository.deleteGame(gameId)).thenReturn(false);  // Mock repository deleteGame behavior
 
-        // Act
-        EntityNotFoundException thrown = null;
-        try {
-            gameService.deleteGame(gameId);
-        } catch (EntityNotFoundException e) {
-            thrown = e;
-        }
-
-        // Assert
-        assertNotNull(thrown, "Expected EntityNotFoundException but none was thrown");
+        // Act + Assert
+        EntityNotFoundException thrown = assertThrows(
+                EntityNotFoundException.class,
+                () ->  gameService.deleteGame(gameId),
+                "Expected EntityNotFoundException but none was thrown"
+        );
         assertEquals("GameService: Game with id " + gameId + " not found.", thrown.getMessage());  //
         // Messages should match
     }
