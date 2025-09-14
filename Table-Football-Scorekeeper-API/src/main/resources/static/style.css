@@ -62,7 +62,7 @@ p {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;;
+  margin-bottom: 20px;
 }
 
 #add-player-form input {
@@ -104,7 +104,10 @@ p {
   display: flex;
   align-items: center;
   justify-self: center;
-  margin-top: 10px;
+  margin: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color:white;
 }
 
 .score-controls span {
@@ -127,18 +130,14 @@ select {
   cursor: pointer;
 }
 
-.score-controls, #end-game-message {
+#end-game-message {
   margin: 20px;
   font-size: 16px;
   font-weight: bold;
   color: white;
 }
 
-#stats-table thead {
-  color: white;
-}
-
-#stats-table tbody {
+#stats-table thead, #stats-table tbody {
   color: white;
 }
 
@@ -203,14 +202,7 @@ button {
   border-radius: 4px;
 }
 
-.score-buttons button:disabled {
-  background-color: grey;
-  color: #ccc;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-#start-game-button:disabled {
+button:disabled {
   background-color: grey;
   color: #ccc;
   cursor: not-allowed;
