@@ -18,12 +18,25 @@ Built with Java, Maven, and SQLite.
 - Docker (containerized deployment)
 
 ## 📦 Getting started
-- Install Docker
-- Pull the image: `docker pull triinlutsoja/football-api:latest`
-- Run the container: `docker run -p 8080:8080 triinlutsoja/football-api:latest`
+- Install Docker (if not already installed)
+- Pull the image: 
+```bash
+docker pull triinlutsoja/football-api:latest
+```
+- Run the container:
+```bash
+docker run -p 8080:8080 triinlutsoja/football-api:latest
+```
 - (Optional) To persist data, you can mount a local folder for the SQLite database:
-    `docker run -p 8080:8080 -v /path/on/host:/app/data triinlutsoja/football-api:latest` ⚠️ Replace /path/on/host with the path on your computer where you want the database stored. The folder will contain your *.db file and preserve data between runs.
-- Stop the container: `docker stop <container_id_or_name>` ⚠️ Replace <container_id_or_name> with the container name 
+```bash
+docker run -p 8080:8080 -v /path/on/host:/app/data triinlutsoja/football-api:latest
+```
+⚠️ Replace /path/on/host with the path on your computer where you want the database stored. The folder will contain your *.db file and preserve data between runs.
+- Stop the container: 
+```bash
+docker stop <container_id_or_name>
+```
+⚠️ Replace <container_id_or_name> with the container name 
   or id.
 
 ## 📖 Usage
